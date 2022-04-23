@@ -228,7 +228,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -275,6 +275,97 @@ mjx-container[display="true"] + br {
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2022/04/24/%E5%85%B3%E4%BA%8Ejs%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5%E4%B8%8E%E4%B8%89%E5%85%83%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E5%9D%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jacky Jiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/04/24/%E5%85%B3%E4%BA%8Ejs%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5%E4%B8%8E%E4%B8%89%E5%85%83%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E5%9D%91/" class="post-title-link" itemprop="url">关于js字符串拼接与三元表达式的坑</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-24 01:37:16 / 修改时间：01:57:27" itemprop="dateCreated datePublished" datetime="2022-04-24T01:37:16+08:00">2022-04-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在学react的代码的入门例子的时候遇到了以下代码 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');</span><br></pre></td></tr></table></figure></p>
+<p>当时想当然的认为并不需要括号,如以下代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const status = 'Next player: ' + this.state.xIsNext ? 'X' : 'O';</span><br></pre></td></tr></table></figure>
+<p>但显示结果会为<code>X</code></p>
+<p>但是该代码实际上在类型严格的语言如C#会报错,
+因为代码在没有加括号会从左到右来执行,
+这样会将<code>'Next player: ' + this.state.xIsNext</code>先计算,
+因此得到一个string类型, 但强类型语言的string没法转换成bool类型,
+因此会编译不通过.</p>
+<p>但是js是个弱类型的语言, 因此string类型也能进行true和false判断,
+string不为null则为true, 反之为false,
+因此<code>'Next player: ' + this.state.xIsNext</code>先计算,
+进行真假判断, 得到结果为true, 所以界面会显示<code>X</code></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2022/04/23/ES6-Object-assign-%E6%96%B9%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -293,7 +384,7 @@ mjx-container[display="true"] + br {
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/04/23/ES6-Object-assign-%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">ES6 Object.assign()方法</a>
+          <a href="/2022/04/23/ES6-Object-assign-%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">ES6 Object.assign()方法的用法</a>
         </h2>
 
         <div class="post-meta-container">
@@ -303,9 +394,15 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-04-23 20:23:28 / 修改时间：21:20:13" itemprop="dateCreated datePublished" datetime="2022-04-23T20:23:28+08:00">2022-04-23</time>
+      <time title="创建时间：2022-04-23 20:23:28" itemprop="dateCreated datePublished" datetime="2022-04-23T20:23:28+08:00">2022-04-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-24 01:38:34" itemprop="dateModified" datetime="2022-04-24T01:38:34+08:00">2022-04-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
