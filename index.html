@@ -407,7 +407,7 @@ x:Key 的样式）</h3>
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-08-20 16:27:47 / 修改时间：16:44:42" itemprop="dateCreated datePublished" datetime="2025-08-20T16:27:47+08:00">2025-08-20</time>
+      <time title="创建时间：2025-08-20 16:27:47 / 修改时间：17:05:15" itemprop="dateCreated datePublished" datetime="2025-08-20T16:27:47+08:00">2025-08-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -473,15 +473,16 @@ x:Key 的样式）</h3>
 </tbody>
 </table>
 <h2 id="控件级资源local-resource">控件级资源（Local Resource）</h2>
-<p>拥有最高的优先级。 如下，将按钮的背景色设置为红色： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button Content="Button 1" Background="Red"/&gt;</span><br></pre></td></tr></table></figure></p>
+<p>拥有最高的优先级。 如下，将按钮的背景色设置为红色： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button Content="Button 1" Width="100" Height="50" Background="Yellow" /&gt;</span><br></pre></td></tr></table></figure></p>
 <h2 id="用户控件级资源usercontrol-level-resource">用户控件级资源（UserControl-level
 Resource）</h2>
 <p>定义在 &lt;UserControl.Resources&gt;
-内，仅对该用户控件及其子元素有效。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;UserControl.Resources&gt;</span><br><span class="line">    &lt;SolidColorBrush x:Key="MyBrush" Color="Green"/&gt;</span><br><span class="line">&lt;/UserControl.Resources&gt;</span><br></pre></td></tr></table></figure></p>
+内，仅对该用户控件及其子元素有效。 如下，为用户控件内所有 Button
+设置背景色为黄色： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;UserControl.Resources&gt;</span><br><span class="line">    &lt;Style TargetType="Button"&gt;</span><br><span class="line">        &lt;Setter Property="Width" Value="100"/&gt;</span><br><span class="line">        &lt;Setter Property="Height" Value="50"/&gt;</span><br><span class="line">        &lt;Setter Property="Background" Value="Yellow"/&gt;</span><br><span class="line">    &lt;/Style&gt;</span><br><span class="line">&lt;/UserControl.Resources&gt;</span><br></pre></td></tr></table></figure></p>
 <h2 id="页面级资源page-level-resource">页面级资源（Page-level
 Resource）</h2>
 <p>定义在 &lt;Page.Resources&gt; 内，仅对该页面及其子元素有效。
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;Page.Resources&gt;</span><br><span class="line">    &lt;Style TargetType="TextBlock"&gt;</span><br><span class="line">        &lt;Setter Property="Foreground" Value="Blue"/&gt;</span><br><span class="line">    &lt;/Style&gt;</span><br><span class="line">&lt;/Page.Resources&gt;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;Page.Resources&gt;</span><br><span class="line">    &lt;Style TargetType="Button"&gt;</span><br><span class="line">        &lt;Setter Property="Width" Value="100"/&gt;</span><br><span class="line">        &lt;Setter Property="Height" Value="50"/&gt;</span><br><span class="line">        &lt;Setter Property="Background" Value="Yellow"/&gt;</span><br><span class="line">    &lt;/Style&gt;</span><br><span class="line">&lt;/Page.Resources&gt;</span><br></pre></td></tr></table></figure></p>
 <h2 id="窗口级资源window-level-resource">窗口级资源（Window-level
 Resource）</h2>
 <p>需要写在 &lt;Window.Resources&gt;
@@ -493,8 +494,8 @@ Resource）</h2>
 <h2 id="外部资源字典resourcedictionary-file">外部资源字典（ResourceDictionary
 File）</h2>
 <p>可将资源单独存放在 .xaml 文件中，通过 MergedDictionaries
-合并到任意作用域，实现资源共享。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;ResourceDictionary&gt;</span><br><span class="line">    &lt;Color x:Key="MyColor"&gt;#FF123456&lt;/Color&gt;</span><br><span class="line">&lt;/ResourceDictionary&gt;</span><br></pre></td></tr></table></figure> 在 App.xaml 或
-Window/Page 中引用： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;Application.Resources&gt;</span><br><span class="line">    &lt;ResourceDictionary&gt;</span><br><span class="line">        &lt;ResourceDictionary.MergedDictionaries&gt;</span><br><span class="line">            &lt;ResourceDictionary Source="Resources/MyResource.xaml"/&gt;</span><br><span class="line">        &lt;/ResourceDictionary.MergedDictionaries&gt;</span><br><span class="line">    &lt;/ResourceDictionary&gt;</span><br><span class="line">&lt;/Application.Resources&gt;</span><br></pre></td></tr></table></figure></p>
+合并到任意作用域，实现资源共享。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;ResourceDictionary&gt;</span><br><span class="line">    &lt;Style TargetType="Button"&gt;</span><br><span class="line">        &lt;Setter Property="Width" Value="100"/&gt;</span><br><span class="line">        &lt;Setter Property="Height" Value="50"/&gt;</span><br><span class="line">        &lt;Setter Property="Background" Value="Yellow" /&gt;</span><br><span class="line">    &lt;/Style&gt;</span><br><span class="line">&lt;/ResourceDictionary&gt;</span><br></pre></td></tr></table></figure></p>
+<p>在 App.xaml 或 Window/Page 中引用： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;Application.Resources&gt;</span><br><span class="line">    &lt;ResourceDictionary&gt;</span><br><span class="line">        &lt;ResourceDictionary.MergedDictionaries&gt;</span><br><span class="line">            &lt;ResourceDictionary Source="Resources/MyResource.xaml"/&gt;</span><br><span class="line">        &lt;/ResourceDictionary.MergedDictionaries&gt;</span><br><span class="line">    &lt;/ResourceDictionary&gt;</span><br><span class="line">&lt;/Application.Resources&gt;</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>资源查找顺序：WPF 会从控件级开始，逐级向上查找（控件 → 用户控件 →
 页面 → 窗口 → 应用 → 外部资源字典），直到找到为止。</p>
