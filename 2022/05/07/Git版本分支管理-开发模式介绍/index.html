@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"freegostudio.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Git开发模式分类 开发模式从本质上可以分为两类: 特性分支开发模式(Feature Branch Development)和主干开发模式(Trunk Based Development). 特性分支开发模式 介绍 特性分支开发模式是指为一个或多个特定的需求 &#x2F; 缺陷 &#x2F; 任务创建代码分支（branch），在其上完成相应的开发（一般经过增量测试）后，把它合并（merge）到主干 &#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git版本分支管理-开发模式介绍">
+<meta property="og:url" content="https://freegostudio.github.io/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="废狗的博客">
+<meta property="og:description" content="Git开发模式分类 开发模式从本质上可以分为两类: 特性分支开发模式(Feature Branch Development)和主干开发模式(Trunk Based Development). 特性分支开发模式 介绍 特性分支开发模式是指为一个或多个特定的需求 &#x2F; 缺陷 &#x2F; 任务创建代码分支（branch），在其上完成相应的开发（一般经过增量测试）后，把它合并（merge）到主干 &#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://freegostudio.github.io/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/FBD_1.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/TBD_0.png">
+<meta property="article:published_time" content="2022-05-07T07:51:07.000Z">
+<meta property="article:modified_time" content="2025-08-20T03:21:24.953Z">
+<meta property="article:author" content="Jacky Jiang">
+<meta property="article:tag" content="代码管理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://freegostudio.github.io/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/FBD_1.png">
+
+
+<link rel="canonical" href="https://freegostudio.github.io/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://freegostudio.github.io/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/","path":"2022/05/07/Git版本分支管理-开发模式介绍/","title":"Git版本分支管理-开发模式介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Git版本分支管理-开发模式介绍 | 废狗的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">废狗的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#git%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">Git开发模式分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%80%A7%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">特性分支开发模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">1.1.2.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">1.1.3.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.4.</span> <span class="nav-text">适用环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.5.</span> <span class="nav-text">常用模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%B9%B2%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">主干开发模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E7%8E%AF%E5%A2%83-1"><span class="nav-number">1.2.4.</span> <span class="nav-text">适用环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%BC%8F-1"><span class="nav-number">1.2.5.</span> <span class="nav-text">常用模式</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jacky Jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jacky Jiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Git版本分支管理-开发模式介绍 | 废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git版本分支管理-开发模式介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-07 15:51:07" itemprop="dateCreated datePublished" datetime="2022-05-07T15:51:07+08:00">2022-05-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">软件开发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="git开发模式分类">Git开发模式分类</h1>
+<p>开发模式从本质上可以分为两类: <strong>特性分支开发模式(Feature Branch
+Development)</strong>和<strong>主干开发模式(Trunk Based
+Development)</strong>.</p>
+<h2 id="特性分支开发模式">特性分支开发模式</h2>
+<h3 id="介绍">介绍</h3>
+<p>特性分支开发模式是指为一个或多个特定的需求 / 缺陷 /
+任务创建代码分支（branch），在其上完成相应的开发（一般经过增量测试）后，把它合并（merge）到主干
+/ 集成分支的开发模式。</p>
+<p>通常这种分支生命期会持续一段时间，从几天到几周不等，极少数情况甚至以月算。</p>
+<p>以Git-Flow为例: <img src="/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/FBD_1.png" class="" title="Git-Flow"></p>
+<h3 id="优点">优点</h3>
+<p>特性开发周期宽松：因为生命期可以较长，较大的需求特性可以在宽松的时间内完成再合入主干；</p>
+<p>分支测试的时间宽松：因为生命期可以较长，可以有较多时间对分支进行测试，甚至手工测试；</p>
+<h3 id="缺点">缺点</h3>
+<p>分支管理复杂：原因在于大量采用代码分支，且来源分支和合入目标分支各异，操作复杂
+—— 以上图为例，可以从 master（Tag 1.0.0） 拉出 hotfix 1.0.2
+分支，然后合入到 develop 分支，开发阶段结束后合入到 release
+branches，发布后合入 master，非常复杂，很容易出错；</p>
+<p>合并冲突多、解决难：分支生命期越长，意味着与主干的代码差异越大，冲突概率越高，冲突的解决难度越大（甚至成为不可能）；</p>
+<p>迭代速度慢：特性分支生命期长（数天至数周）意味着特性上线速度慢，相应的迭代速度也慢；</p>
+<p>需要较多测试环境：每个特性分支都需要分配至少 1
+个测试环境，且长期占用（有状态）；</p>
+<h3 id="适用环境">适用环境</h3>
+<p>对版本迭代速度要求不高</p>
+<p>测试自动化程度低，或说主要靠人工测试的</p>
+<h3 id="常用模式">常用模式</h3>
+<p><strong>Git-Flow</strong>, <strong>Github-Flow</strong>,
+<strong>Gitlab-Flow</strong></p>
+<h2 id="主干开发模式">主干开发模式</h2>
+<h3 id="介绍-1">介绍</h3>
+<p>主干开发，是指开发人员直接向主干（习惯上主干分支通常为：trunk 或
+master）提交 / 推送代码。通常，开发团队的成员 1 天至少 1
+次地将代码提交到主干分支。在到达发布条件时，从主干拉出发布分支（通常为
+release），用于发布。若发现缺陷，直接在主干上修复，并根据需要 cherry
+pick 到对应版本的发布分支。</p>
+<p>以TBD Flow为例: <img src="/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/TBD_0.png" class="" title="TBD Flow"></p>
+<h3 id="优点-1">优点</h3>
+<p>分支模型简单高效，开发人员易于掌握不容易出现错误操作</p>
+<p>避免了分支合并、冲突解决的困扰</p>
+<p>随时拥有可发布的版本</p>
+<p>有利于持续集成和持续交付</p>
+<h3 id="缺点-1">缺点</h3>
+<p>基础架构要求高：合入到主干的代码若质量不过关将直接阻塞整个团队的开发工作，因此需要高效的持续集成平台进行把关；</p>
+<p>自动化测试要求高：需有完备单元测试代码，确保在代码合入主干前能在获得快速和可靠的质量反馈；</p>
+<p>最好有代码评审：若代码质量要求高，需要配套代码评审（CR）机制，在代码提交到主干时，触发
+CR，通过 Peer Review 后才能正式合入；</p>
+<p>最好有特性开关：主干开发频发合入主干的情况下，特性拆分得很小，可能是半成品特性，需要配套特性开关（Feature
+Toggle），只有当特性整体开发完才通过灰度发布等手段逐步打开；</p>
+<h3 id="适用环境-1">适用环境</h3>
+<p>对迭代速度要求高，希望需求快速交付上线</p>
+<p>基础架构强，持续集成工具高效；</p>
+<p>团队成员习惯
+TDD（测试驱动开发），代码自动化测试覆盖率高（至少增量代码的自动化测试覆盖率高）；</p>
+<h3 id="常用模式-1">常用模式</h3>
+<p><strong>TBD Flow</strong>, <strong>TBD++ Flow</strong></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/" rel="tag"># 代码管理</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/24/%E5%85%B3%E4%BA%8Ejs%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5%E4%B8%8E%E4%B8%89%E5%85%83%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E5%9D%91/" rel="prev" title="关于js字符串拼接与三元表达式的坑">
+                  <i class="fa fa-angle-left"></i> 关于js字符串拼接与三元表达式的坑
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/08/C-%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E4%B8%8E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E7%9A%84%E9%97%AE%E9%A2%98/" rel="next" title="C#成员变量与局部变量的问题">
+                  C#成员变量与局部变量的问题 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jacky Jiang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

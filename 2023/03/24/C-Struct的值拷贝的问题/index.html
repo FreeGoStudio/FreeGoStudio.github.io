@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"freegostudio.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="概述 C#中的Struct是值类型数据结构，在使用时常发生值拷贝。 公用代码 12345678910111213141516public struct ChildStruct{    public int Value;}public class ChildClass{    public int Value;}public struct ParentStruct{    public int">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# Struct的值拷贝的问题">
+<meta property="og:url" content="https://freegostudio.github.io/2023/03/24/C-Struct%E7%9A%84%E5%80%BC%E6%8B%B7%E8%B4%9D%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="废狗的博客">
+<meta property="og:description" content="概述 C#中的Struct是值类型数据结构，在使用时常发生值拷贝。 公用代码 12345678910111213141516public struct ChildStruct{    public int Value;}public class ChildClass{    public int Value;}public struct ParentStruct{    public int">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-24T13:37:29.000Z">
+<meta property="article:modified_time" content="2025-08-20T03:21:24.951Z">
+<meta property="article:author" content="Jacky Jiang">
+<meta property="article:tag" content="C#">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://freegostudio.github.io/2023/03/24/C-Struct%E7%9A%84%E5%80%BC%E6%8B%B7%E8%B4%9D%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://freegostudio.github.io/2023/03/24/C-Struct%E7%9A%84%E5%80%BC%E6%8B%B7%E8%B4%9D%E7%9A%84%E9%97%AE%E9%A2%98/","path":"2023/03/24/C-Struct的值拷贝的问题/","title":"C# Struct的值拷贝的问题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C# Struct的值拷贝的问题 | 废狗的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">废狗的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E7%94%A8%E4%BB%A3%E7%A0%81"><span class="nav-number">1.0.1.</span> <span class="nav-text">公用代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0%E8%BF%9B%E8%A1%8C%E5%80%BC%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.1.</span> <span class="nav-text">作为参数进行值拷贝</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.1.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C"><span class="nav-number">1.1.2.</span> <span class="nav-text">输出结果：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.1.3.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E8%89%AF"><span class="nav-number">1.1.4.</span> <span class="nav-text">改良</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#return%E8%BF%9B%E8%A1%8C%E5%80%BC%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.2.</span> <span class="nav-text">return进行值拷贝</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">输出结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E8%89%AF-1"><span class="nav-number">1.2.4.</span> <span class="nav-text">改良</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#struct%E7%B1%BB%E5%9E%8B%E6%95%B0%E7%BB%84%E5%85%83%E7%B4%A0%E5%AD%98%E4%B8%BA%E5%8F%98%E9%87%8F%E6%97%B6%E8%BF%9B%E8%A1%8C%E5%80%BC%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.3.</span> <span class="nav-text">Struct类型数组元素存为变量时进行值拷贝</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C-2"><span class="nav-number">1.3.2.</span> <span class="nav-text">输出结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-2"><span class="nav-number">1.3.3.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E8%89%AF-2"><span class="nav-number">1.3.4.</span> <span class="nav-text">改良</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%86%85%E5%88%9B%E5%BB%BA%E5%B9%B6%E8%BF%94%E5%9B%9E%E7%9A%84struct%E9%81%BF%E5%85%8D%E5%80%BC%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.4.</span> <span class="nav-text">函数内创建并返回的Struct避免值拷贝</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-3"><span class="nav-number">1.4.1.</span> <span class="nav-text">示例代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-3"><span class="nav-number">1.4.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E8%89%AF-3"><span class="nav-number">1.4.3.</span> <span class="nav-text">改良</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#struct%E5%86%85%E7%9A%84struct%E7%B1%BB%E5%9E%8B%E6%88%90%E5%91%98%E4%B8%8Eclass%E7%B1%BB%E5%9E%8B%E6%88%90%E5%91%98"><span class="nav-number">1.5.</span> <span class="nav-text">Struct内的Struct类型成员与Class类型成员</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C-3"><span class="nav-number">1.5.1.</span> <span class="nav-text">输出结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90-4"><span class="nav-number">1.5.2.</span> <span class="nav-text">分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%96%91%E9%97%AE"><span class="nav-number">2.</span> <span class="nav-text">疑问</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jacky Jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2023/03/24/C-Struct%E7%9A%84%E5%80%BC%E6%8B%B7%E8%B4%9D%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jacky Jiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C# Struct的值拷贝的问题 | 废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C# Struct的值拷贝的问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-03-24 21:37:29" itemprop="dateCreated datePublished" datetime="2023-03-24T21:37:29+08:00">2023-03-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">软件开发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="概述">概述</h1>
+<p>C#中的Struct是值类型数据结构，在使用时常发生值拷贝。</p>
+<h3 id="公用代码">公用代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">struct</span> ChildStruct</span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Value;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ChildClass</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Value;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">struct</span> ParentStruct</span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Value;</span><br><span class="line">    <span class="keyword">public</span> ChildStruct ChildStruct;</span><br><span class="line">    <span class="keyword">public</span> ChildClass ChildClass;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="作为参数进行值拷贝">作为参数进行值拷贝</h2>
+<h3 id="示例代码">示例代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    parentStruct1.Value = <span class="number">1</span>;</span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line"></span><br><span class="line">    CopyValue1(parentStruct1);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CopyValue1</span>(<span class="params">ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct.Value = <span class="number">2</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="输出结果">输出结果：</h3>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+<h3 id="分析">分析</h3>
+<p>函数<code>CopyValue1</code>中对传入参数<code>parentStruct</code>的修改，并不能影响函数外<code>parentStruct1</code>的值。所以认为<code>Struct</code>作为传入参数发生了值拷贝，函数内修改的与函数修改的<code>Struct</code>并非同一个引用。</p>
+<h3 id="改良">改良</h3>
+<p>使用<code>ref</code>进行传参，这样不再传递<code>Struct</code>的值，而是传递<code>Struct</code>的引用来避免值拷贝。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    parentStruct1.Value = <span class="number">1</span>;</span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line"></span><br><span class="line">    CopyValue1(<span class="keyword">ref</span> parentStruct1);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CopyValue1</span>(<span class="params"><span class="keyword">ref</span> ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct.Value = <span class="number">2</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+<h2 id="return进行值拷贝">return进行值拷贝</h2>
+<h3 id="示例代码-1">示例代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    parentStruct1.Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    ParentStruct parentStruct2 = CopyValue2(<span class="keyword">ref</span> parentStruct1);</span><br><span class="line">    parentStruct2.Value = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct2.Value);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ParentStruct <span class="title">CopyValue2</span>(<span class="params"><span class="keyword">ref</span> ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct.Value = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">return</span> parentStruct;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="输出结果-1">输出结果</h3>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+<h3 id="分析-1">分析</h3>
+<p>从之前的示例可以得知ref传参传递的是引用，因此认为函数内的<code>parentStruct</code>变量的与函数外的<code>parentStruct1</code>变量是同一个引用。</p>
+<p>变量<code>parentStruct2</code>接收<code>CopyValue2</code>的返回值，并对<code>parentStruct2</code>中的值进行修改，但输出的结果发现<code>parentStruct1</code>中的值并未发生修改。</p>
+<p>可以得出结论：函数的返回值也是值传递，并非引用传递。</p>
+<h3 id="改良-1">改良</h3>
+<p>使用<code>ref</code>将返回的类型为引用类型。接收的变量也需要使用<code>ref</code>修饰。来避免值拷贝。
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    parentStruct1.Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ref</span> ParentStruct parentStruct2 = <span class="function"><span class="keyword">ref</span> <span class="title">CopyValue1</span>(<span class="params"><span class="keyword">ref</span> parentStruct1</span>)</span>;</span><br><span class="line">    parentStruct2.Value = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct2.Value);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ref</span> ParentStruct <span class="title">CopyValue1</span>(<span class="params"><span class="keyword">ref</span> ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct.Value = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">ref</span> parentStruct;</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">3</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+<h2 id="struct类型数组元素存为变量时进行值拷贝">Struct类型数组元素存为变量时进行值拷贝</h2>
+<h3 id="示例代码-2">示例代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct[] structs = <span class="keyword">new</span> ParentStruct[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    structs[<span class="number">0</span>] = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    structs[<span class="number">0</span>].Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(structs[<span class="number">0</span>].Value);</span><br><span class="line"></span><br><span class="line">    ParentStruct parentStruct0 = structs[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">    parentStruct0.Value = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(structs[<span class="number">0</span>].Value);</span><br><span class="line">    Console.WriteLine(parentStruct0.Value);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="输出结果-2">输出结果</h3>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+<h3 id="分析-2">分析</h3>
+<p>由输出的结果可以发现对于将<code>Struct数组</code>的元素存为变量<code>parentStruct0</code>后，对于<code>parentStruct0</code>的修改并不会改变数组中元素内的值，所以拷贝的是值而不是引用。</p>
+<h3 id="改良-2">改良</h3>
+<p>使用<code>ref</code>修饰变量，这样变量存储的是数组元素的引用来避免值拷贝。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct[] structs = <span class="keyword">new</span> ParentStruct[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    structs[<span class="number">0</span>] = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    structs[<span class="number">0</span>].Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(structs[<span class="number">0</span>].Value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ref</span> ParentStruct parentStruct0 = <span class="keyword">ref</span> structs[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">    parentStruct0.Value = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(structs[<span class="number">0</span>].Value);</span><br><span class="line">    Console.WriteLine(parentStruct0.Value);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="函数内创建并返回的struct避免值拷贝">函数内创建并返回的Struct避免值拷贝</h2>
+<h3 id="示例代码-3">示例代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = CreateParentStruct();</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ParentStruct <span class="title">CreateParentStruct</span>()</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    <span class="keyword">return</span> parentStruct;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="分析-3">分析</h3>
+<p>从之前的结论可以得知函数返回值是值拷贝，所以使用<code>out</code>关键词来避免值拷贝</p>
+<h3 id="改良-3">改良</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1;</span><br><span class="line">    CreateParentStruct(<span class="keyword">out</span> parentStruct1);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateParentStruct</span>(<span class="params"><span class="keyword">out</span> ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="struct内的struct类型成员与class类型成员">Struct内的Struct类型成员与Class类型成员</h2>
+<p><code>ParentStruct</code>是个<code>Struct</code>，内部有<code>Struct</code>类型成员变量<code>ChildStruct</code>和<code>Class</code>类型成员变量<code>ChildClass</code>。分别创建这两种类型的变量，初始化<code>Value</code>的值，并赋值给<code>ParentStruct</code>变量对应的成员。两种类型的变量的<code>Value</code>值，观察<code>ParentStruct</code>变量内部对应成员值的变化。代码如下：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line"></span><br><span class="line">    ChildStruct childStruct1 = <span class="keyword">new</span> ChildStruct();</span><br><span class="line">    childStruct1.Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    parentStruct1.ChildStruct = childStruct1;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">$"childStruct1.Value:<span class="subst">{childStruct1.Value}</span>"</span>);</span><br><span class="line"></span><br><span class="line">    childStruct1.Value = <span class="number">2</span>;</span><br><span class="line">    Console.WriteLine(<span class="string">"-------childStruct1.Value的值修改后-------"</span>);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">$"childStruct1.Value:<span class="subst">{childStruct1.Value}</span>"</span>);</span><br><span class="line">    Console.WriteLine(<span class="string">$"parentStruct1.ChildStruct.Value:<span class="subst">{parentStruct1.ChildStruct.Value}</span>"</span>);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">"\n"</span>);</span><br><span class="line"></span><br><span class="line">    ChildClass childClass1 = <span class="keyword">new</span> ChildClass();</span><br><span class="line">    childClass1.Value = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    parentStruct1.ChildClass = childClass1;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">$"childClass1.Value:<span class="subst">{childClass1.Value}</span>"</span>);</span><br><span class="line"></span><br><span class="line">    childClass1.Value = <span class="number">4</span>;</span><br><span class="line">    Console.WriteLine(<span class="string">"-------childClass1.Value的值修改后-------"</span>);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">$"childClass1.Value:<span class="subst">{childClass1.Value}</span>"</span>);</span><br><span class="line">    Console.WriteLine(<span class="string">$"parentStruct1.ChildClass.Value:<span class="subst">{parentStruct1.ChildClass.Value}</span>"</span>);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="输出结果-3">输出结果</h3>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">childStruct1.Value:1</span><br><span class="line">-------childStruct1.Value的值修改后-------</span><br><span class="line">childStruct1.Value:2</span><br><span class="line">parentStruct1.ChildStruct.Value:1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">childClass1.Value:3</span><br><span class="line">-------childClass1.Value的值修改后-------</span><br><span class="line">childClass1.Value:4</span><br><span class="line">parentStruct1.ChildClass.Value:4</span><br></pre></td></tr></table></figure>
+<h3 id="分析-4">分析</h3>
+<p>Struct的Struct成员存储的是成员内部的值，而Struct的Class成员存储的是成员的引用。并且在C#11之前的版本没法使用ref成员。因此Struct类型的成员没法使用享元模式。因为每次都会拷贝。</p>
+<h1 id="疑问">疑问</h1>
+<p>对于C#的ref关键词，个人认为ref在修饰参数时和作用与类型上时是不一样的。
+修饰参数时表示参数是通过引用的方式来传递的，但没法传递一个数组的元素的引用。只能传递数组元素的值拷贝，在内部对引用的变更并不会影响到外部。对此感到疑惑，因此需要慎重在方法内对于ref或out修饰的参数的引用进行修改。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C#</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/15/AI%E7%BB%98%E7%94%BB-Stable-Diffusion%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="prev" title="AI绘画-Stable Diffusion环境搭建">
+                  <i class="fa fa-angle-left"></i> AI绘画-Stable Diffusion环境搭建
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/26/C-%E4%B8%AD%E4%BD%BF%E7%94%A8BeachmarkDotNet%E8%BF%9B%E8%A1%8C%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95/" rel="next" title="C#中使用BeachmarkDotNet进行基准测试">
+                  C#中使用BeachmarkDotNet进行基准测试 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jacky Jiang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

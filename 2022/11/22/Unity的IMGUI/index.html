@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"freegostudio.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简介 IMGUI是一个代码驱动的GUI系统。由对实现它的任何脚本上的OnGUI函数的调用进行驱动。 IMGUI通常用于：  创建游戏内调试显示和工具。 创建脚本组件自定义的Inspectors。 创建editor窗口和工具来扩展Unity本身。  基础 OnGUI()代码每帧都会被调用，因此无需显式创建或销毁GUI控件。 声明GUI控件的三个要素为：控件类型，位置和内容。 控">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity的IMGUI">
+<meta property="og:url" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/index.html">
+<meta property="og:site_name" content="废狗的博客">
+<meta property="og:description" content="简介 IMGUI是一个代码驱动的GUI系统。由对实现它的任何脚本上的OnGUI函数的调用进行驱动。 IMGUI通常用于：  创建游戏内调试显示和工具。 创建脚本组件自定义的Inspectors。 创建editor窗口和工具来扩展Unity本身。  基础 OnGUI()代码每帧都会被调用，因此无需显式创建或销毁GUI控件。 声明GUI控件的三个要素为：控件类型，位置和内容。 控">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/Label.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/Button.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/RepeatButton.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/TextField.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/TextArea.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/Toggle.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/Toolbar.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/SelectionGrid.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/HorizontalSlider.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/VerticalSlider.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/HorizontalScrollbar.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/VerticalScrollbar.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/ScrollView.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/Window.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/GUIStyles.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/LabelSlider.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/RGBSlider_1.png">
+<meta property="og:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/RGBSlider_2.png">
+<meta property="article:published_time" content="2022-11-22T03:37:36.000Z">
+<meta property="article:modified_time" content="2025-08-20T03:21:24.958Z">
+<meta property="article:author" content="Jacky Jiang">
+<meta property="article:tag" content="UI, Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/Label.png">
+
+
+<link rel="canonical" href="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/","path":"2022/11/22/Unity的IMGUI/","title":"Unity的IMGUI"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unity的IMGUI | 废狗的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">废狗的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-number">2.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E4%BB%B6%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">控件类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.label"><span class="nav-number">2.1.1.</span> <span class="nav-text">GUI.Label</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.button"><span class="nav-number">2.1.2.</span> <span class="nav-text">GUI.Button</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.repeatbutton"><span class="nav-number">2.1.3.</span> <span class="nav-text">GUI.RepeatButton</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.textfield"><span class="nav-number">2.1.4.</span> <span class="nav-text">GUI.TextField</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.textarea"><span class="nav-number">2.1.5.</span> <span class="nav-text">GUI.TextArea</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.toggle"><span class="nav-number">2.1.6.</span> <span class="nav-text">GUI.Toggle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.toolbar"><span class="nav-number">2.1.7.</span> <span class="nav-text">GUI.Toolbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.selectiongrid"><span class="nav-number">2.1.8.</span> <span class="nav-text">GUI.SelectionGrid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.horizontalslider"><span class="nav-number">2.1.9.</span> <span class="nav-text">GUI.HorizontalSlider</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.verticalslider"><span class="nav-number">2.1.10.</span> <span class="nav-text">GUI.VerticalSlider</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.horizontalscrollbar"><span class="nav-number">2.1.11.</span> <span class="nav-text">GUI.HorizontalScrollbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.verticalscrollbar"><span class="nav-number">2.1.12.</span> <span class="nav-text">GUI.VerticalScrollbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.beginscrollviewgui.endscrollview"><span class="nav-number">2.1.13.</span> <span class="nav-text">GUI.BeginScrollView&#x2F;GUI.EndScrollView</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.window"><span class="nav-number">2.1.14.</span> <span class="nav-text">GUI.Window</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gui.changed"><span class="nav-number">2.1.15.</span> <span class="nav-text">GUI.changed</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E4%BB%B6%E4%BD%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">控件位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E4%BB%B6%E5%86%85%E5%AE%B9"><span class="nav-number">2.3.</span> <span class="nav-text">控件内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">自定义控件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%96%E8%A7%82"><span class="nav-number">3.1.</span> <span class="nav-text">自定义外观</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#guistyles"><span class="nav-number">3.1.1.</span> <span class="nav-text">GUIStyles</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%85%AC%E5%85%B1%E5%8F%98%E9%87%8F%E7%9A%84guistyle"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">声明公共变量的GUIStyle</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E6%9B%B4%E6%94%B9guistyle%E5%B1%9E%E6%80%A7"><span class="nav-number">3.1.1.2.</span> <span class="nav-text">动态更改GUIStyle属性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#guiskins"><span class="nav-number">3.1.2.</span> <span class="nav-text">GUISkins</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAguiskins"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">创建GUISkins</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8guiskins"><span class="nav-number">3.1.2.2.</span> <span class="nav-text">应用GUISkins</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B1%80%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.3.</span> <span class="nav-text">布局模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%88%97%E6%8E%A7%E4%BB%B6"><span class="nav-number">3.1.4.</span> <span class="nav-text">排列控件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%AA%97%E5%8F%A3%E5%A4%A7%E5%B0%8F"><span class="nav-number">3.1.4.1.</span> <span class="nav-text">获取当前窗口大小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fixed%E5%B8%83%E5%B1%80-groups"><span class="nav-number">3.1.4.2.</span> <span class="nav-text">Fixed布局-Groups</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#automatic%E5%B8%83%E5%B1%80-areas"><span class="nav-number">3.1.4.3.</span> <span class="nav-text">Automatic布局-Areas</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#automatic%E5%B8%83%E5%B1%80-horizontal%E5%92%8Cvertical"><span class="nav-number">3.1.4.4.</span> <span class="nav-text">Automatic布局-Horizontal和Vertical</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#guilayoutoptions%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6"><span class="nav-number">3.1.4.5.</span> <span class="nav-text">GUILayoutOptions定义控件</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E5%B1%95imgui"><span class="nav-number">4.</span> <span class="nav-text">扩展IMGUI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E5%90%88%E6%8E%A7%E4%BB%B6"><span class="nav-number">4.1.</span> <span class="nav-text">复合控件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%A4%8D%E5%90%88%E6%8E%A7%E4%BB%B6"><span class="nav-number">4.2.</span> <span class="nav-text">静态复合控件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E5%A4%8D%E7%94%A8%E7%9A%84rgb%E6%BB%91%E5%9D%97%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.3.</span> <span class="nav-text">可复用的RGB滑块示例</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jacky Jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2022/11/22/Unity%E7%9A%84IMGUI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jacky Jiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unity的IMGUI | 废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity的IMGUI
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-11-22 11:37:36" itemprop="dateCreated datePublished" datetime="2022-11-22T11:37:36+08:00">2022-11-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">软件开发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介">简介</h1>
+<p>IMGUI是一个代码驱动的GUI系统。由对实现它的任何脚本上的OnGUI函数的调用进行驱动。</p>
+<p>IMGUI通常用于：</p>
+<ul>
+<li>创建游戏内调试显示和工具。</li>
+<li>创建脚本组件自定义的Inspectors。</li>
+<li>创建editor窗口和工具来扩展Unity本身。</li>
+</ul>
+<h1 id="基础">基础</h1>
+<p><code>OnGUI()</code>代码每帧都会被调用，因此无需显式创建或销毁GUI控件。</p>
+<p>声明GUI控件的三个要素为：控件类型，位置和内容。</p>
+<p><code>控件类型</code> Type( <code>位置</code> Rect, <code>内容</code>
+String/GUIContent );</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">if</span> (Time.time % <span class="number">2</span> &lt; <span class="number">1</span>) </span><br><span class="line">        {</span><br><span class="line">            <span class="keyword">if</span> (GUI.Button (<span class="keyword">new</span> Rect (<span class="number">10</span>,<span class="number">10</span>,<span class="number">200</span>,<span class="number">20</span>), <span class="string">"Meet the flashing button"</span>))</span><br><span class="line">            {</span><br><span class="line">                print (<span class="string">"You clicked me!"</span>);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="控件类型">控件类型</h2>
+<p>控件类型通过调用Unity的GUI类或GUILayout类中的函数来声明。</p>
+<h3 id="gui.label">GUI.Label</h3>
+<p>标签控件<code>GUI.Label</code>是非交互式的。它只用于显示无法单击或拖动。最适合只显示信息。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/Label.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        GUI.Label (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">30</span>), <span class="string">"Label"</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.button">GUI.Button</h3>
+<p>按钮控件<code>GUI.Button</code>是典型的交互式按钮。鼠标按下时，无论鼠标保持按下多久都只会响应一次。释放鼠标按钮后，将立即发生响应。</p>
+<p>鼠标单击时返回<code>true</code>，否则为<code>false</code>。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/Button.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">if</span> (GUI.Button (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">30</span>), <span class="string">"Button"</span>)) </span><br><span class="line">        {</span><br><span class="line">            <span class="comment">// This code is executed when the Button is clicked</span></span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.repeatbutton">GUI.RepeatButton</h3>
+<p>重复按钮控件<code>GUI.RepeatButton</code>是常规按钮的变体。<code>GUI.RepeatButton</code>将响应鼠标按钮保持按下的每一帧。这允许你创建单击并按住功能。</p>
+<p>鼠标按住时每一帧都返回<code>true</code>。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/RepeatButton.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">if</span> (GUI.RepeatButton (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">30</span>), <span class="string">"RepeatButton"</span>)) </span><br><span class="line">        {</span><br><span class="line">            <span class="comment">// This code is executed every frame that the RepeatButton remains clicked</span></span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.textfield">GUI.TextField</h3>
+<p>文本输入框控件<code>GUI.TextField</code>是一个可编辑单行文本字段。</p>
+<p>文本字段将始终显示一个字符串。必须提供要在文本字段中显示的字符串。对字符串进行编辑时，TextField函数将返回编辑后的字符串。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/TextField.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span> textFieldString = <span class="string">"text field"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        textFieldString = GUI.TextField (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">30</span>), textFieldString);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.textarea">GUI.TextArea</h3>
+<p>文本输入域控件<code>GUI.TextArea</code>是一个可编辑多行文本区域。</p>
+<p>文本字段将始终显示一个字符串。必须提供要在文本字段中显示的字符串。对字符串进行编辑时，TextField函数将返回编辑后的字符串。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/TextArea.png" class="">
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line">using System.Collections;</span><br><span class="line"></span><br><span class="line">public class GUITest : MonoBehaviour</span><br><span class="line">{</span><br><span class="line">    private string textAreaString = "text area";</span><br><span class="line">    </span><br><span class="line">    void OnGUI ()</span><br><span class="line">    {</span><br><span class="line">        textAreaString = GUI.TextArea (new Rect (25, 25, 100, 30), textAreaString);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.toggle">GUI.Toggle</h3>
+<p>选择框控件<code>GUI.Toggle</code>会创建一个保持开/关的选项框。用户可以通过单击来改变状态。</p>
+<p><code>true</code>为选中。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/Toggle.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">bool</span> toggleBool = <span class="literal">true</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        toggleBool = GUI.Toggle (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">30</span>), toggleBool, <span class="string">"Toggle"</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.toolbar">GUI.Toolbar</h3>
+<p>工具条控件<code>GUI.Toolbar</code>本质上是一组只能有单个被选中的按钮。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/Toolbar.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">int</span> toolbarInt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span>[] toolbarStrings = {<span class="string">"Toolbar1"</span>, <span class="string">"Toolbar2"</span>, <span class="string">"Toolbar3"</span>};</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        toolbarInt = GUI.Toolbar (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">250</span>, <span class="number">30</span>), toolbarInt, toolbarStrings);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.selectiongrid">GUI.SelectionGrid</h3>
+<p>选择网格控件<code>GUI.SelectionGrid</code>是一个多行的<code>GUI.Toolbar</code>。可以确定网格中的列和行。同一组中只能有个一个按钮被选中。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/SelectionGrid.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">int</span> selectionGridInt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span>[] selectionStrings = {<span class="string">"Grid 1"</span>, <span class="string">"Grid 2"</span>, <span class="string">"Grid 3"</span>, <span class="string">"Grid 4"</span>};</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        selectionGridInt = GUI.SelectionGrid (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">300</span>, <span class="number">60</span>), selectionGridInt, selectionStrings, <span class="number">2</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.horizontalslider">GUI.HorizontalSlider</h3>
+<p>水平滑块控件<code>GUI.HorizontalSlider</code>是一个典型的水平滑动按钮，可以拖动它在预定的最小值和最大值之间更改值。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/HorizontalSlider.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> hSliderValue = <span class="number">0.0f</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        hSliderValue = GUI.HorizontalSlider (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">30</span>), hSliderValue, <span class="number">0.0f</span>, <span class="number">10.0f</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.verticalslider">GUI.VerticalSlider</h3>
+<p>垂直滑块控件<code>GUI.VerticalSlider</code>是一个典型的垂直滑动按钮，可以拖动它在预定的最小值和最大值之间更改值。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/VerticalSlider.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> vSliderValue = <span class="number">0.0f</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        vSliderValue = GUI.VerticalSlider (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">30</span>), vSliderValue, <span class="number">10.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.horizontalscrollbar">GUI.HorizontalScrollbar</h3>
+<p>水平滚动条控件<code>GUI.HorizontalScrollbar</code>类似于滑块控件。被用于导航GUI.BeginScrollView/GUI.EndScrollView滚动视图控件。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/HorizontalScrollbar.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> hScrollbarValue;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        hScrollbarValue = GUI.HorizontalScrollbar (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">30</span>), hScrollbarValue, <span class="number">1.0f</span>, <span class="number">0.0f</span>, <span class="number">10.0f</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.verticalscrollbar">GUI.VerticalScrollbar</h3>
+<p>垂直滚动条控件<code>GUI.VerticalScrollbar</code>类似于滑块控件。被用于导航GUI.BeginScrollView/GUI.EndScrollView滚动视图控件。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/VerticalScrollbar.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> vScrollbarValue;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span></span><br><span class="line">    {</span><br><span class="line">        vScrollbarValue = GUI. VerticalScrollbar (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">30</span>), vScrollbarValue, <span class="number">1.0f</span>, <span class="number">10.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.beginscrollviewgui.endscrollview">GUI.BeginScrollView/GUI.EndScrollView</h3>
+<p>滚动视图<code>GUI.BeginScrollView/GUI.EndScrollView</code>是将范围内的控件加入到一个带有滚动条的视图。</p>
+<p>ScrollViews需要两个Rects作为参数。第一个Rect定义屏幕上可以查看的滚动视图的位置和大小。第二个Rect定义可视区域内包含的空间大小。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/ScrollView.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> Vector2 scrollViewVector = Vector2.zero;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span> innerText = <span class="string">"I am inside the ScrollView"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        <span class="comment">// Begin the ScrollView</span></span><br><span class="line">        scrollViewVector = GUI.BeginScrollView (<span class="keyword">new</span> Rect (<span class="number">25</span>, <span class="number">25</span>, <span class="number">100</span>, <span class="number">100</span>), scrollViewVector, <span class="keyword">new</span> Rect (<span class="number">0</span>, <span class="number">0</span>, <span class="number">400</span>, <span class="number">400</span>));</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Put something inside the ScrollView</span></span><br><span class="line">        innerText = GUI.TextArea (<span class="keyword">new</span> Rect (<span class="number">0</span>, <span class="number">0</span>, <span class="number">400</span>, <span class="number">400</span>), innerText);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// End the ScrollView</span></span><br><span class="line">        GUI.EndScrollView();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.window">GUI.Window</h3>
+<p>窗口控件<code>Window</code>是可拖拽的容器。单击时，他们会接收和失去焦点。每个窗口控件都有一个ID，其内容在窗口控件具有焦点时调用的单独函数中声明。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/Window.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">private</span> Rect windowRect = <span class="keyword">new</span> Rect (<span class="number">20</span>, <span class="number">20</span>, <span class="number">120</span>, <span class="number">50</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span></span><br><span class="line">    {</span><br><span class="line">        windowRect = GUI.Window (<span class="number">0</span>, windowRect, WindowFunction, <span class="string">"My Window"</span>);</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">WindowFunction</span> (<span class="params"><span class="built_in">int</span> windowID</span>)</span> </span><br><span class="line">    {</span><br><span class="line">        <span class="comment">// Draw any Controls inside the window here</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="gui.changed">GUI.changed</h3>
+<p>要检测用户是否在GUI中执行了任何操作（例如：单击按钮，拖动滑块），请从脚本中读取<code>GUI.changed</code>的值。执行了操作，将返回<code>true</code>。</p>
+<p>一种常见的方案是工具栏，希望根据单击工具栏中的按钮来改变特定的值。但不想每次调用<code>OnGUI()</code>时分配值，而是在单击其中一个按钮时才分配值。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">{</span><br><span class="line">                    </span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">int</span> selectedToolbar = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">string</span>[] toolbarStrings = {<span class="string">"One"</span>, <span class="string">"Two"</span>};</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        <span class="comment">// Determine which button is active, whether it was clicked this frame or not</span></span><br><span class="line">        selectedToolbar = GUI.Toolbar (<span class="keyword">new</span> Rect (<span class="number">50</span>, <span class="number">10</span>, Screen.width - <span class="number">100</span>, <span class="number">30</span>), selectedToolbar, toolbarStrings);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// If the user clicked a new Toolbar button this frame, we'll process their input</span></span><br><span class="line">        <span class="keyword">if</span> (GUI.changed)</span><br><span class="line">        {</span><br><span class="line">            Debug.Log(<span class="string">"The toolbar was clicked"</span>);</span><br><span class="line">    </span><br><span class="line">            <span class="keyword">if</span> (<span class="number">0</span> == selectedToolbar)</span><br><span class="line">            {</span><br><span class="line">                Debug.Log(<span class="string">"First button was clicked"</span>);</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            {</span><br><span class="line">                Debug.Log(<span class="string">"Second button was clicked"</span>);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="控件位置">控件位置</h2>
+<p>Position是任何GUI控制函数的第一个参数。该参数是一个Rect类型。</p>
+<p>可以通过获取屏幕宽度<code>Screen.width</code>和高度<code>Screen.height</code>来控制控件的相对位置。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">            </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span>()</span></span><br><span class="line">    {</span><br><span class="line">        GUI.Box (<span class="keyword">new</span> Rect (<span class="number">0</span>,<span class="number">0</span>,<span class="number">100</span>,<span class="number">50</span>), <span class="string">"Top-left"</span>);</span><br><span class="line">        GUI.Box (<span class="keyword">new</span> Rect (Screen.width - <span class="number">100</span>,<span class="number">0</span>,<span class="number">100</span>,<span class="number">50</span>), <span class="string">"Top-right"</span>);</span><br><span class="line">        GUI.Box (<span class="keyword">new</span> Rect (<span class="number">0</span>,Screen.height - <span class="number">50</span>,<span class="number">100</span>,<span class="number">50</span>), <span class="string">"Bottom-left"</span>);</span><br><span class="line">        GUI.Box (<span class="keyword">new</span> Rect (Screen.width - <span class="number">100</span>,Screen.height - <span class="number">50</span>,<span class="number">100</span>,<span class="number">50</span>), <span class="string">"Bottom-right"</span>);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="控件内容">控件内容</h2>
+<p>GUI控件的第二个参数用于控制控件显示的内容。可以显示文本或图像。</p>
+<p>如果需要同时显示图像和文本。可以使用GUIContent类型作为参数，并定义GUIContent的文字和图像。</p>
+<p>还可以通过GUIContent定义tooltip，并在鼠标悬停时显示提示。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> Texture2D controlTexture;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Texture2D icon;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span></span><br><span class="line">    {</span><br><span class="line">        <span class="comment">//显示文本</span></span><br><span class="line">		GUI.Label(<span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">50</span>), <span class="string">"This is the text string for a Label Control"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//显示图片</span></span><br><span class="line">		GUI.Label(<span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">70</span>, <span class="number">100</span>, <span class="number">50</span>), controlTexture);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//按钮显示文字</span></span><br><span class="line">        <span class="keyword">if</span>(GUI.Button(<span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">130</span>, <span class="number">100</span>, <span class="number">20</span>), <span class="string">"This is text"</span>))</span><br><span class="line">		{</span><br><span class="line">			print(<span class="string">"you clicked the text button"</span>);</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">        <span class="comment">//按钮显示图片</span></span><br><span class="line">		<span class="keyword">if</span>(GUI.Button(<span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">160</span>, <span class="number">100</span>, <span class="number">50</span>), icon))</span><br><span class="line">		{</span><br><span class="line">			print(<span class="string">"you clicked the icon"</span>);</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方形区域通过GUIContent显示文字和图片</span></span><br><span class="line">		GUI.Box(<span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">220</span>, <span class="number">100</span>, <span class="number">50</span>), <span class="keyword">new</span> GUIContent(<span class="string">"This is text"</span>, icon));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//按钮通过GUIContent显示文字和悬浮提示</span></span><br><span class="line">		GUI.Button(<span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">280</span>, <span class="number">100</span>, <span class="number">20</span>), <span class="keyword">new</span> GUIContent(<span class="string">"Click me1"</span>, <span class="string">"This is the tooltip1"</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//定义悬浮提示的位置和大小</span></span><br><span class="line">		GUI.Label(<span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">310</span>, <span class="number">200</span>, <span class="number">20</span>), GUI.tooltip);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//按钮通过GUIContent显示文字，图片和悬浮提示</span></span><br><span class="line">		GUI.Button(<span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">340</span>, <span class="number">100</span>, <span class="number">20</span>), <span class="keyword">new</span> GUIContent(<span class="string">"Click me2"</span>, icon, <span class="string">"This is the tooltip2"</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//定义悬浮提示的位置和大小</span></span><br><span class="line">		GUI.Label(<span class="keyword">new</span> Rect(<span class="number">10</span>, <span class="number">380</span>, <span class="number">200</span>, <span class="number">20</span>), GUI.tooltip);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h1 id="自定义控件">自定义控件</h1>
+<h2 id="自定义外观">自定义外观</h2>
+<p>在未自定义<code>GUIStyles</code>的情况下，会使用Unity默认的<code>GUIStyles</code>。</p>
+<h3 id="guistyles">GUIStyles</h3>
+<p>所有GUI控件的函数的最后一个可选参数：用于选择控件的<code>GUIStyles</code>。省略此项，使用Unity默认<code>GUIStyles</code>。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> </span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> </span><br><span class="line">    {</span><br><span class="line">        <span class="comment">// Make a label that uses the "box" GUIStyle.</span></span><br><span class="line">        GUI.Label (<span class="keyword">new</span> Rect (<span class="number">0</span>,<span class="number">0</span>,<span class="number">200</span>,<span class="number">100</span>), <span class="string">"Hi - I'm a label looking like a box"</span>, <span class="string">"box"</span>);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Make a button that uses the "toggle" GUIStyle</span></span><br><span class="line">        GUI.Button (<span class="keyword">new</span> Rect (<span class="number">10</span>,<span class="number">140</span>,<span class="number">180</span>,<span class="number">20</span>), <span class="string">"This is a button"</span>, <span class="string">"toggle"</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h4 id="声明公共变量的guistyle">声明公共变量的GUIStyle</h4>
+<p>声明公共变量的<code>GUIStyle</code>时，可以在<code>Inspector</code>中查看和配置<code>GUIStyle</code>。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/GUIStyles.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="keyword">public</span> GUIStyle customButton;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        <span class="comment">// Make a button. We pass in the GUIStyle defined above as the style to use</span></span><br><span class="line">        GUI.Button (<span class="keyword">new</span> Rect (<span class="number">10</span>,<span class="number">10</span>,<span class="number">150</span>,<span class="number">20</span>), <span class="string">"I am a Custom Button"</span>, customButton);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h4 id="动态更改guistyle属性">动态更改GUIStyle属性</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line">using System.Collections;</span><br><span class="line">    </span><br><span class="line">public class Fontsize : MonoBehaviour</span><br><span class="line">{</span><br><span class="line">    void OnGUI ()</span><br><span class="line">    {</span><br><span class="line">        //Set the GUIStyle style to be label</span><br><span class="line">        GUIStyle style = GUI.skin.GetStyle ("label");</span><br><span class="line">        </span><br><span class="line">        //Set the style font size to increase and decrease over time</span><br><span class="line">        style.fontSize = (int)(20.0f + 10.0f * Mathf.Sin (Time.time));</span><br><span class="line">        </span><br><span class="line">        //Create a label and display with the current settings</span><br><span class="line">        GUI.Label (new Rect (10, 10, 200, 80), "Hello World!");</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="guiskins">GUISkins</h3>
+<p><code>GUISkins</code>是<code>GUIStyles</code>的集合。<code>GUIStyles</code>定义GUI控件的外观。如果使用<code>GUIStyles</code>，则不必使用<code>GUISkins</code>。</p>
+<p>当有大量不同的<code>GUIStyles</code>需要使用时，可以在单个<code>GUISkins</code>中定义他们。</p>
+<h4 id="创建guiskins">创建GUISkins</h4>
+<p><code>Assets-&gt;Create-&gt;GUI Skin</code></p>
+<h4 id="应用guiskins">应用GUISkins</h4>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">                    </span><br><span class="line">    <span class="keyword">public</span> GUISkin mySkin;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        <span class="comment">// Assign the skin to be the one currently used.</span></span><br><span class="line">        GUI.skin = mySkin;</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Make a button. This will get the default "button" style from the skin assigned to mySkin.</span></span><br><span class="line">        GUI.Button (<span class="keyword">new</span> Rect (<span class="number">10</span>,<span class="number">10</span>,<span class="number">150</span>,<span class="number">20</span>), <span class="string">"Skinned Button"</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="布局模式">布局模式</h3>
+<p>分为<code>Fixed</code>布局和<code>Automatic</code>布局。</p>
+<p>在<code>OnGUI()</code>中可以同时使用两种布局模式。</p>
+<p>界面的元素数量和位置确定的时候使用<code>Fixed</code>，反之使用<code>Automatic</code>模式。</p>
+<p>使用<code>Automatic</code>模式的主要区别：</p>
+<ul>
+<li>使用<code>GUILayout</code>代替<code>GUI</code>。</li>
+<li>使用<code>Automatic</code>布局控件不需要<code>Rect()</code>函数。</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        <span class="comment">// Fixed Layout</span></span><br><span class="line">        GUI.Button (<span class="keyword">new</span> Rect (<span class="number">25</span>,<span class="number">25</span>,<span class="number">100</span>,<span class="number">30</span>), <span class="string">"I am a Fixed Layout Button"</span>);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Automatic Layout</span></span><br><span class="line">        GUILayout.Button (<span class="string">"I am an Automatic Layout Button"</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="排列控件">排列控件</h3>
+<p>分为： <code>Fixed</code>布局-<code>Groups</code>。
+<code>Automatic</code>布局-<code>Areas</code>。
+<code>Automatic</code>布局-<code>Horizontal</code>。
+<code>Automatic</code>布局-<code>Vertical</code>。</p>
+<h4 id="获取当前窗口大小">获取当前窗口大小</h4>
+<p>当前窗口宽度：<code>Screen.width</code></p>
+<p>当前窗口高度：<code>Screen.height</code></p>
+<h4 id="fixed布局-groups">Fixed布局-Groups</h4>
+<p>使用GUI.BeginGroup()和GUI.EndGroup()函数。组内控件是根据组的左上角，而不是屏幕的左上角进行定位。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        <span class="comment">// Make a group on the center of the screen</span></span><br><span class="line">        GUI.BeginGroup (<span class="keyword">new</span> Rect (Screen.width / <span class="number">2</span> - <span class="number">50</span>, Screen.height / <span class="number">2</span> - <span class="number">50</span>, <span class="number">100</span>, <span class="number">100</span>));</span><br><span class="line">        <span class="comment">// All rectangles are now adjusted to the group. (0,0) is the topleft corner of the group.</span></span><br><span class="line">    </span><br><span class="line">        <span class="comment">// We'll make a box so you can see where the group is on-screen.</span></span><br><span class="line">        GUI.Box (<span class="keyword">new</span> Rect (<span class="number">0</span>,<span class="number">0</span>,<span class="number">100</span>,<span class="number">100</span>), <span class="string">"Group is here"</span>);</span><br><span class="line">        GUI.Button (<span class="keyword">new</span> Rect (<span class="number">10</span>,<span class="number">40</span>,<span class="number">80</span>,<span class="number">30</span>), <span class="string">"Click me"</span>);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// End the group we started above. This is very important to remember!</span></span><br><span class="line">        GUI.EndGroup ();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>可以使用多个组互相嵌套。 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="comment">// background image that is 256 x 32</span></span><br><span class="line">    <span class="keyword">public</span> Texture2D bgImage; </span><br><span class="line">    <span class="comment">// foreground image that is 256 x 32</span></span><br><span class="line">    <span class="keyword">public</span> Texture2D fgImage; </span><br><span class="line">    <span class="comment">// a float between 0.0 and 1.0</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> playerEnergy = <span class="number">1.0f</span>; </span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        <span class="comment">// Create one Group to contain both images</span></span><br><span class="line">        <span class="comment">// Adjust the first 2 coordinates to place it somewhere else on-screen</span></span><br><span class="line">        GUI.BeginGroup (<span class="keyword">new</span> Rect (<span class="number">0</span>,<span class="number">0</span>,<span class="number">256</span>,<span class="number">32</span>));</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Draw the background image</span></span><br><span class="line">        GUI.Box (<span class="keyword">new</span> Rect (<span class="number">0</span>,<span class="number">0</span>,<span class="number">256</span>,<span class="number">32</span>), bgImage);</span><br><span class="line">    </span><br><span class="line">            <span class="comment">// Create a second Group which will be clipped</span></span><br><span class="line">            <span class="comment">// We want to clip the image and not scale it, which is why we need the second Group</span></span><br><span class="line">            GUI.BeginGroup (<span class="keyword">new</span> Rect (<span class="number">0</span>,<span class="number">0</span>,playerEnergy * <span class="number">256</span>, <span class="number">32</span>));</span><br><span class="line">        </span><br><span class="line">            <span class="comment">// Draw the foreground image</span></span><br><span class="line">            GUI.Box (<span class="keyword">new</span> Rect (<span class="number">0</span>,<span class="number">0</span>,<span class="number">256</span>,<span class="number">32</span>), fgImage);</span><br><span class="line">        </span><br><span class="line">            <span class="comment">// End both Groups</span></span><br><span class="line">            GUI.EndGroup ();</span><br><span class="line">        </span><br><span class="line">        GUI.EndGroup ();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<h4 id="automatic布局-areas">Automatic布局-Areas</h4>
+<p>是<code>Automatic</code>的默认模式。</p>
+<p>默认是类似于<code>Fixed</code>的<code>Groups</code>布局。</p>
+<p>以左上角为锚点。</p>
+<p>区域内具有可见元素的控件宽度会拉整个区域的宽度。</p>
+<p>使用<code>GUILayout.BeginArea()</code>和<code>GUILayout.EndArea()</code>来创建区域。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        GUILayout.Button (<span class="string">"I am not inside an Area"</span>);</span><br><span class="line">        GUILayout.BeginArea (<span class="keyword">new</span> Rect (Screen.width/<span class="number">2</span>, Screen.height/<span class="number">2</span>, <span class="number">300</span>, <span class="number">300</span>));</span><br><span class="line">        GUILayout.Button (<span class="string">"I am completely inside an Area"</span>);</span><br><span class="line">        GUILayout.EndArea ();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h4 id="automatic布局-horizontal和vertical">Automatic布局-Horizontal和Vertical</h4>
+<p>通过使用<code>GUILayout.BeginHorizontal()</code>，<code>GUILayout.EndHorizontal()</code>，<code>GUILayout.BeginVertical()</code>，<code>GUILayout.EndVertical()</code>函数，决定区域内的组件的排列放松。可以嵌套。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> sliderValue = <span class="number">1.0f</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> maxSliderValue = <span class="number">10.0f</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span>()</span></span><br><span class="line">    {</span><br><span class="line">        <span class="comment">// Wrap everything in the designated GUI Area</span></span><br><span class="line">        GUILayout.BeginArea (<span class="keyword">new</span> Rect (<span class="number">0</span>,<span class="number">0</span>,<span class="number">200</span>,<span class="number">60</span>));</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Begin the singular Horizontal Group</span></span><br><span class="line">        GUILayout.BeginHorizontal();</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Place a Button normally</span></span><br><span class="line">        <span class="keyword">if</span> (GUILayout.RepeatButton (<span class="string">"Increase max\nSlider Value"</span>))</span><br><span class="line">        {</span><br><span class="line">            maxSliderValue += <span class="number">3.0f</span> * Time.deltaTime;</span><br><span class="line">        }</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// Arrange two more Controls vertically beside the Button</span></span><br><span class="line">        GUILayout.BeginVertical();</span><br><span class="line">        GUILayout.Box(<span class="string">"Slider Value: "</span> + Mathf.Round(sliderValue));</span><br><span class="line">        sliderValue = GUILayout.HorizontalSlider (sliderValue, <span class="number">0.0f</span>, maxSliderValue);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// End the Groups and Area</span></span><br><span class="line">        GUILayout.EndVertical();</span><br><span class="line">        GUILayout.EndHorizontal();</span><br><span class="line">        GUILayout.EndArea();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h4 id="guilayoutoptions定义控件">GUILayoutOptions定义控件</h4>
+<p>可以使用GUILayoutOptions覆盖某些自动布局参数。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        GUILayout.BeginArea (<span class="keyword">new</span> Rect (<span class="number">100</span>, <span class="number">50</span>, Screen.width<span class="number">-200</span>, Screen.height<span class="number">-100</span>));</span><br><span class="line">        GUILayout.Button (<span class="string">"I am a regular Automatic Layout Button"</span>);</span><br><span class="line">        GUILayout.Button (<span class="string">"My width has been overridden"</span>, GUILayout.Width (<span class="number">95</span>));</span><br><span class="line">        GUILayout.EndArea ();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h1 id="扩展imgui">扩展IMGUI</h1>
+<h2 id="复合控件">复合控件</h2>
+<p>在GUI中可能出现两种类型的控件同时出现的情况。就可以创建同时包含多种控件的复合控件。</p>
+<p>例如：该控件同时包含<code>Label</code>和<code>HorizontalSlider</code>。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/LabelSlider.png" class="">
+<p>在此示例中，<code>LabelSlider()</code>会返回正确的值，以使其具有交互性。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> mySlider = <span class="number">1.0f</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        mySlider = LabelSlider (<span class="keyword">new</span> Rect (<span class="number">10</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">20</span>), mySlider, <span class="number">5.0f</span>, <span class="string">"Label text here"</span>);</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="built_in">float</span> <span class="title">LabelSlider</span> (<span class="params">Rect screenRect, <span class="built_in">float</span> sliderValue, <span class="built_in">float</span> sliderMaxValue, <span class="built_in">string</span> labelText</span>)</span> {</span><br><span class="line">        GUI.Label (screenRect, labelText);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// &lt;- Push the Slider to the end of the Label</span></span><br><span class="line">        screenRect.x += screenRect.width; </span><br><span class="line">    </span><br><span class="line">        sliderValue = GUI.HorizontalSlider (screenRect, sliderValue, <span class="number">0.0f</span>, sliderMaxValue);</span><br><span class="line">        <span class="keyword">return</span> sliderValue;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="静态复合控件">静态复合控件</h2>
+<p>通过使用静态函数，可以创建自己的复合控件集合。这样能使控件复用。</p>
+<p>这样其他脚本需要使用<code>LabelSlider</code>就只需要调用<code>CompoundControls.LabelSlider()</code>，传入正确的参数和处理返回值就可以了。
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CompoundControls</span> : <span class="title">MonoBehaviour</span> {     </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">float</span> <span class="title">LabelSlider</span> (<span class="params">Rect screenRect, <span class="built_in">float</span> sliderValue, <span class="built_in">float</span> sliderMaxValue, <span class="built_in">string</span> labelText</span>)</span> {</span><br><span class="line">        GUI.Label (screenRect, labelText);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// &lt;- Push the Slider to the end of the Label</span></span><br><span class="line">        screenRect.x += screenRect.width; </span><br><span class="line">    </span><br><span class="line">        sliderValue = GUI.HorizontalSlider (screenRect, sliderValue, <span class="number">0.0f</span>, sliderMaxValue);</span><br><span class="line">        <span class="keyword">return</span> sliderValue;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<h2 id="可复用的rgb滑块示例">可复用的RGB滑块示例</h2>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/RGBSlider_1.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="keyword">public</span> Color myColor;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        myColor = RGBSlider (<span class="keyword">new</span> Rect (<span class="number">10</span>,<span class="number">10</span>,<span class="number">200</span>,<span class="number">10</span>), myColor);</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="function">Color <span class="title">RGBSlider</span> (<span class="params">Rect screenRect, Color rgb</span>)</span> {</span><br><span class="line">        rgb.r = GUI.HorizontalSlider (screenRect, rgb.r, <span class="number">0.0f</span>, <span class="number">1.0f</span>);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// &lt;- Move the next control down a bit to avoid overlapping</span></span><br><span class="line">        screenRect.y += <span class="number">20</span>; </span><br><span class="line">        rgb.g = GUI.HorizontalSlider (screenRect, rgb.g, <span class="number">0.0f</span>, <span class="number">1.0f</span>);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// &lt;- Move the next control down a bit to avoid overlapping</span></span><br><span class="line">        screenRect.y += <span class="number">20</span>; </span><br><span class="line">    </span><br><span class="line">        rgb.b = GUI.HorizontalSlider (screenRect, rgb.b, <span class="number">0.0f</span>, <span class="number">1.0f</span>);</span><br><span class="line">        <span class="keyword">return</span> rgb;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>现在在其他复合组件的基础上来构建复合组件。</p>
+<img src="/2022/11/22/Unity%E7%9A%84IMGUI/RGBSlider_2.png" class="">
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">GUITest</span> : <span class="title">MonoBehaviour</span> {</span><br><span class="line">    <span class="keyword">public</span> Color myColor;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">OnGUI</span> ()</span> {</span><br><span class="line">        myColor = RGBSlider (<span class="keyword">new</span> Rect (<span class="number">10</span>,<span class="number">10</span>,<span class="number">200</span>,<span class="number">30</span>), myColor);</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="function">Color <span class="title">RGBSlider</span> (<span class="params">Rect screenRect, Color rgb</span>)</span> {</span><br><span class="line">        rgb.r = CompoundControls.LabelSlider (screenRect, rgb.r, <span class="number">1.0f</span>, <span class="string">"Red"</span>);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// &lt;- Move the next control down a bit to avoid overlapping</span></span><br><span class="line">        screenRect.y += <span class="number">20</span>; </span><br><span class="line">        rgb.g = CompoundControls.LabelSlider (screenRect, rgb.g, <span class="number">1.0f</span>, <span class="string">"Green"</span>);</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// &lt;- Move the next control down a bit to avoid overlapping</span></span><br><span class="line">        screenRect.y += <span class="number">20</span>; </span><br><span class="line">    </span><br><span class="line">        rgb.b = CompoundControls.LabelSlider (screenRect, rgb.b, <span class="number">1.0f</span>, <span class="string">"Blue"</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> rgb;</span><br><span class="line">    }   </span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/UI-Unity/" rel="tag"># UI, Unity</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/22/Unity-UI%E7%9A%84%E5%88%86%E7%B1%BB/" rel="prev" title="Unity UI的分类">
+                  <i class="fa fa-angle-left"></i> Unity UI的分类
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/11/25/IMGUI%E6%89%A9%E5%B1%95%E7%BC%96%E8%BE%91%E5%99%A8/" rel="next" title="IMGUI扩展编辑器">
+                  IMGUI扩展编辑器 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jacky Jiang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"freegostudio.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="Explicit Dependencies Principle 定义 方法和类应明确要求(通常通过方法参数或构造函数参数)它们所需的任何协作对象, 以便正常运行. 依赖项 如果您的类需要其他类来执行其操作, 那么这些其他类就是依赖项. 隐式依赖项 如果这些依赖项仅存在于类内部的代码中, 而不存在于其公共接口中, 则它们是隐式的. 显式依赖项 对于类的依赖项, 显示依赖项最常出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="显式依赖关系原则">
+<meta property="og:url" content="https://freegostudio.github.io/2023/11/27/%E6%98%BE%E5%BC%8F%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB%E5%8E%9F%E5%88%99/index.html">
+<meta property="og:site_name" content="废狗的博客">
+<meta property="og:description" content="Explicit Dependencies Principle 定义 方法和类应明确要求(通常通过方法参数或构造函数参数)它们所需的任何协作对象, 以便正常运行. 依赖项 如果您的类需要其他类来执行其操作, 那么这些其他类就是依赖项. 隐式依赖项 如果这些依赖项仅存在于类内部的代码中, 而不存在于其公共接口中, 则它们是隐式的. 显式依赖项 对于类的依赖项, 显示依赖项最常出">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-27T02:56:09.000Z">
+<meta property="article:modified_time" content="2025-08-20T03:21:24.961Z">
+<meta property="article:author" content="Jacky Jiang">
+<meta property="article:tag" content="开发原则">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://freegostudio.github.io/2023/11/27/%E6%98%BE%E5%BC%8F%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB%E5%8E%9F%E5%88%99/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://freegostudio.github.io/2023/11/27/%E6%98%BE%E5%BC%8F%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB%E5%8E%9F%E5%88%99/","path":"2023/11/27/显式依赖关系原则/","title":"显式依赖关系原则"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>显式依赖关系原则 | 废狗的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">废狗的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#explicit-dependencies-principle"><span class="nav-number">1.</span> <span class="nav-text">Explicit Dependencies
+Principle</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E9%A1%B9"><span class="nav-number">1.2.</span> <span class="nav-text">依赖项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E5%BC%8F%E4%BE%9D%E8%B5%96%E9%A1%B9"><span class="nav-number">1.3.</span> <span class="nav-text">隐式依赖项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E5%BC%8F%E4%BE%9D%E8%B5%96%E9%A1%B9"><span class="nav-number">1.4.</span> <span class="nav-text">显式依赖项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E5%BC%8F%E4%BE%9D%E8%B5%96%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-number">1.5.</span> <span class="nav-text">隐式依赖的缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E5%BC%8F%E4%BE%9D%E8%B5%96%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">1.6.</span> <span class="nav-text">显式依赖的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.7.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jacky Jiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2023/11/27/%E6%98%BE%E5%BC%8F%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB%E5%8E%9F%E5%88%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jacky Jiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="显式依赖关系原则 | 废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          显式依赖关系原则
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-11-27 10:56:09" itemprop="dateCreated datePublished" datetime="2023-11-27T10:56:09+08:00">2023-11-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">软件开发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="explicit-dependencies-principle">Explicit Dependencies
+Principle</h1>
+<h2 id="定义">定义</h2>
+<p>方法和类应明确要求(通常通过方法参数或构造函数参数)它们所需的任何协作对象,
+以便正常运行.</p>
+<h2 id="依赖项">依赖项</h2>
+<p>如果您的类需要其他类来执行其操作, 那么这些其他类就是依赖项.</p>
+<h2 id="隐式依赖项">隐式依赖项</h2>
+<p>如果这些依赖项仅存在于类内部的代码中, 而不存在于其公共接口中,
+则它们是隐式的.</p>
+<h2 id="显式依赖项">显式依赖项</h2>
+<p>对于类的依赖项, 显示依赖项最常出现在对象的构造函数中;
+对于更多本地依赖项, 显式依赖项通常出现在特定方法的参数列表中.</p>
+<h2 id="隐式依赖的缺点">隐式依赖的缺点</h2>
+<p>隐式依赖关系的类比具有显式依赖关系的类的维护成本更高. 它们更难测试,
+因为他们与协作者的耦合更紧密. 更难以分析副作用,
+因为必须搜索整个类的代码库以查找对象实例化或对静态方法的调用.
+与合作者的耦合更紧密, 导致设计更加僵化和脆弱.</p>
+<h2 id="显式依赖的优点">显式依赖的优点</h2>
+<p>非常清楚的说明了执行特定职能所需的条件.
+它们倾向于遵循<code>最小意外原则</code>, 减少修改代码影响的范围.
+无论是在生产中还是在测试或debug过程中,
+显式依赖项都可以轻松的替换为其他实现.
+这使得它们更容易维护并且更愿意改变.</p>
+<h2 id="示例">示例</h2>
+<p>示例1-隐式依赖: <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">User</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Name;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">Context</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> User CurrentUser;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> User <span class="title">GetCurrentUser</span>()</span></span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">return</span> CurrentUser;</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Client</span></span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Login</span>()</span></span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">return</span> <span class="string">$"用户:<span class="subst">{Context.GetCurrentUser().Name}</span> 已登陆!"</span>;</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">var</span> user = <span class="keyword">new</span> User</span><br><span class="line">        {</span><br><span class="line">            Name = <span class="string">"A"</span></span><br><span class="line">        };</span><br><span class="line"></span><br><span class="line">        Context.CurrentUser = user;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> client = <span class="keyword">new</span> Client();</span><br><span class="line">        Console.WriteLine(client.Login());</span><br><span class="line">        Console.ReadLine();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<p>示例1中, Client对User对象的依赖是在Context静态类中,
+并没有在公共接口中, 是隐式依赖项. 在Main中调用的时候,
+并不能直观的了解到client和创建的user有什么联系, 需要查看内部具体的代码,
+代码间的隔离性很差.</p>
+<p>示例2-显式依赖: <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">User</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Name;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Client</span></span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Login</span>(<span class="params">User user</span>)</span></span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">return</span> <span class="string">$"用户:<span class="subst">{user.Name}</span> 已登陆!"</span>;</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">internal</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">var</span> user = <span class="keyword">new</span> User()</span><br><span class="line">        {</span><br><span class="line">            Name = <span class="string">"A"</span></span><br><span class="line">        };</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> client = <span class="keyword">new</span> Client();</span><br><span class="line">        Console.WriteLine(client2.Login(user));</span><br><span class="line">        Console.ReadLine();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<p>在示例2中, 对于示例1进行了改进.
+不再将user对象的引用存储在Context中去隐式传递依赖项,
+而是直接将user作为<code>client.Login</code>方法的参数传递依赖项,
+能更加直观的看出关联关系,
+且对于<code>Login</code>方法内部的代码也更加具有隔离性.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/FreeGoStudio/DevArt/tree/main/ExplicitDependenciesPrinciple">相关源码</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BC%80%E5%8F%91%E5%8E%9F%E5%88%99/" rel="tag"># 开发原则</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/06/06/Markdown%E4%B8%AD%E5%B5%8C%E5%85%A5PlantUML/" rel="prev" title="Markdown中嵌入PlantUML">
+                  <i class="fa fa-angle-left"></i> Markdown中嵌入PlantUML
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/30/%E7%8A%B6%E6%80%81%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="next" title="状态设计模式">
+                  状态设计模式 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Jacky Jiang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
