@@ -240,7 +240,7 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -266,6 +266,360 @@ mjx-container[display="true"] + br {
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2023/03/24/C-Struct%E7%9A%84%E5%80%BC%E6%8B%B7%E8%B4%9D%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jacky Jiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/03/24/C-Struct%E7%9A%84%E5%80%BC%E6%8B%B7%E8%B4%9D%E7%9A%84%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">C# Struct的值拷贝的问题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-03-24 21:37:29" itemprop="dateCreated datePublished" datetime="2023-03-24T21:37:29+08:00">2023-03-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">软件开发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="概述">概述</h1>
+<p>C#中的Struct是值类型数据结构，在使用时常发生值拷贝。</p>
+<h3 id="公用代码">公用代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">struct</span> ChildStruct</span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Value;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ChildClass</span></span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Value;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">struct</span> ParentStruct</span><br><span class="line">{</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Value;</span><br><span class="line">    <span class="keyword">public</span> ChildStruct ChildStruct;</span><br><span class="line">    <span class="keyword">public</span> ChildClass ChildClass;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="作为参数进行值拷贝">作为参数进行值拷贝</h2>
+<h3 id="示例代码">示例代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    parentStruct1.Value = <span class="number">1</span>;</span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line"></span><br><span class="line">    CopyValue1(parentStruct1);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CopyValue1</span>(<span class="params">ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct.Value = <span class="number">2</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="输出结果">输出结果：</h3>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+<h3 id="分析">分析</h3>
+<p>函数<code>CopyValue1</code>中对传入参数<code>parentStruct</code>的修改，并不能影响函数外<code>parentStruct1</code>的值。所以认为<code>Struct</code>作为传入参数发生了值拷贝，函数内修改的与函数修改的<code>Struct</code>并非同一个引用。</p>
+<h3 id="改良">改良</h3>
+<p>使用<code>ref</code>进行传参，这样不再传递<code>Struct</code>的值，而是传递<code>Struct</code>的引用来避免值拷贝。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    parentStruct1.Value = <span class="number">1</span>;</span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line"></span><br><span class="line">    CopyValue1(<span class="keyword">ref</span> parentStruct1);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CopyValue1</span>(<span class="params"><span class="keyword">ref</span> ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct.Value = <span class="number">2</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+<h2 id="return进行值拷贝">return进行值拷贝</h2>
+<h3 id="示例代码-1">示例代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    parentStruct1.Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    ParentStruct parentStruct2 = CopyValue2(<span class="keyword">ref</span> parentStruct1);</span><br><span class="line">    parentStruct2.Value = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct2.Value);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ParentStruct <span class="title">CopyValue2</span>(<span class="params"><span class="keyword">ref</span> ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct.Value = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">return</span> parentStruct;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="输出结果-1">输出结果</h3>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+<h3 id="分析-1">分析</h3>
+<p>从之前的示例可以得知ref传参传递的是引用，因此认为函数内的<code>parentStruct</code>变量的与函数外的<code>parentStruct1</code>变量是同一个引用。</p>
+<p>变量<code>parentStruct2</code>接收<code>CopyValue2</code>的返回值，并对<code>parentStruct2</code>中的值进行修改，但输出的结果发现<code>parentStruct1</code>中的值并未发生修改。</p>
+<p>可以得出结论：函数的返回值也是值传递，并非引用传递。</p>
+<h3 id="改良-1">改良</h3>
+<p>使用<code>ref</code>将返回的类型为引用类型。接收的变量也需要使用<code>ref</code>修饰。来避免值拷贝。
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    parentStruct1.Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ref</span> ParentStruct parentStruct2 = <span class="function"><span class="keyword">ref</span> <span class="title">CopyValue1</span>(<span class="params"><span class="keyword">ref</span> parentStruct1</span>)</span>;</span><br><span class="line">    parentStruct2.Value = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct1.Value);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(parentStruct2.Value);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">ref</span> ParentStruct <span class="title">CopyValue1</span>(<span class="params"><span class="keyword">ref</span> ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct.Value = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">ref</span> parentStruct;</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">3</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+<h2 id="struct类型数组元素存为变量时进行值拷贝">Struct类型数组元素存为变量时进行值拷贝</h2>
+<h3 id="示例代码-2">示例代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct[] structs = <span class="keyword">new</span> ParentStruct[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    structs[<span class="number">0</span>] = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    structs[<span class="number">0</span>].Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(structs[<span class="number">0</span>].Value);</span><br><span class="line"></span><br><span class="line">    ParentStruct parentStruct0 = structs[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">    parentStruct0.Value = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(structs[<span class="number">0</span>].Value);</span><br><span class="line">    Console.WriteLine(parentStruct0.Value);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="输出结果-2">输出结果</h3>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+<h3 id="分析-2">分析</h3>
+<p>由输出的结果可以发现对于将<code>Struct数组</code>的元素存为变量<code>parentStruct0</code>后，对于<code>parentStruct0</code>的修改并不会改变数组中元素内的值，所以拷贝的是值而不是引用。</p>
+<h3 id="改良-2">改良</h3>
+<p>使用<code>ref</code>修饰变量，这样变量存储的是数组元素的引用来避免值拷贝。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct[] structs = <span class="keyword">new</span> ParentStruct[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    structs[<span class="number">0</span>] = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    structs[<span class="number">0</span>].Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(structs[<span class="number">0</span>].Value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ref</span> ParentStruct parentStruct0 = <span class="keyword">ref</span> structs[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">    parentStruct0.Value = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(structs[<span class="number">0</span>].Value);</span><br><span class="line">    Console.WriteLine(parentStruct0.Value);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="函数内创建并返回的struct避免值拷贝">函数内创建并返回的Struct避免值拷贝</h2>
+<h3 id="示例代码-3">示例代码</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = CreateParentStruct();</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ParentStruct <span class="title">CreateParentStruct</span>()</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">    <span class="keyword">return</span> parentStruct;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="分析-3">分析</h3>
+<p>从之前的结论可以得知函数返回值是值拷贝，所以使用<code>out</code>关键词来避免值拷贝</p>
+<h3 id="改良-3">改良</h3>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1;</span><br><span class="line">    CreateParentStruct(<span class="keyword">out</span> parentStruct1);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CreateParentStruct</span>(<span class="params"><span class="keyword">out</span> ParentStruct parentStruct</span>)</span></span><br><span class="line">{</span><br><span class="line">    parentStruct = <span class="keyword">new</span> ParentStruct();</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h2 id="struct内的struct类型成员与class类型成员">Struct内的Struct类型成员与Class类型成员</h2>
+<p><code>ParentStruct</code>是个<code>Struct</code>，内部有<code>Struct</code>类型成员变量<code>ChildStruct</code>和<code>Class</code>类型成员变量<code>ChildClass</code>。分别创建这两种类型的变量，初始化<code>Value</code>的值，并赋值给<code>ParentStruct</code>变量对应的成员。两种类型的变量的<code>Value</code>值，观察<code>ParentStruct</code>变量内部对应成员值的变化。代码如下：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">{</span><br><span class="line">    ParentStruct parentStruct1 = <span class="keyword">new</span> ParentStruct();</span><br><span class="line"></span><br><span class="line">    ChildStruct childStruct1 = <span class="keyword">new</span> ChildStruct();</span><br><span class="line">    childStruct1.Value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    parentStruct1.ChildStruct = childStruct1;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">$"childStruct1.Value:<span class="subst">{childStruct1.Value}</span>"</span>);</span><br><span class="line"></span><br><span class="line">    childStruct1.Value = <span class="number">2</span>;</span><br><span class="line">    Console.WriteLine(<span class="string">"-------childStruct1.Value的值修改后-------"</span>);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">$"childStruct1.Value:<span class="subst">{childStruct1.Value}</span>"</span>);</span><br><span class="line">    Console.WriteLine(<span class="string">$"parentStruct1.ChildStruct.Value:<span class="subst">{parentStruct1.ChildStruct.Value}</span>"</span>);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">"\n"</span>);</span><br><span class="line"></span><br><span class="line">    ChildClass childClass1 = <span class="keyword">new</span> ChildClass();</span><br><span class="line">    childClass1.Value = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    parentStruct1.ChildClass = childClass1;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">$"childClass1.Value:<span class="subst">{childClass1.Value}</span>"</span>);</span><br><span class="line"></span><br><span class="line">    childClass1.Value = <span class="number">4</span>;</span><br><span class="line">    Console.WriteLine(<span class="string">"-------childClass1.Value的值修改后-------"</span>);</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(<span class="string">$"childClass1.Value:<span class="subst">{childClass1.Value}</span>"</span>);</span><br><span class="line">    Console.WriteLine(<span class="string">$"parentStruct1.ChildClass.Value:<span class="subst">{parentStruct1.ChildClass.Value}</span>"</span>);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<h3 id="输出结果-3">输出结果</h3>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">childStruct1.Value:1</span><br><span class="line">-------childStruct1.Value的值修改后-------</span><br><span class="line">childStruct1.Value:2</span><br><span class="line">parentStruct1.ChildStruct.Value:1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">childClass1.Value:3</span><br><span class="line">-------childClass1.Value的值修改后-------</span><br><span class="line">childClass1.Value:4</span><br><span class="line">parentStruct1.ChildClass.Value:4</span><br></pre></td></tr></table></figure>
+<h3 id="分析-4">分析</h3>
+<p>Struct的Struct成员存储的是成员内部的值，而Struct的Class成员存储的是成员的引用。并且在C#11之前的版本没法使用ref成员。因此Struct类型的成员没法使用享元模式。因为每次都会拷贝。</p>
+<h1 id="疑问">疑问</h1>
+<p>对于C#的ref关键词，个人认为ref在修饰参数时和作用与类型上时是不一样的。
+修饰参数时表示参数是通过引用的方式来传递的，但没法传递一个数组的元素的引用。只能传递数组元素的值拷贝，在内部对引用的变更并不会影响到外部。对此感到疑惑，因此需要慎重在方法内对于ref或out修饰的参数的引用进行修改。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2023/02/15/AI%E7%BB%98%E7%94%BB-Stable-Diffusion%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jacky Jiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/02/15/AI%E7%BB%98%E7%94%BB-Stable-Diffusion%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">AI绘画-Stable Diffusion环境搭建</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-15 21:23:05" itemprop="dateCreated datePublished" datetime="2023-02-15T21:23:05+08:00">2023-02-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="ai绘画-stable-diffusion环境搭建">AI绘画-Stable
+Diffusion环境搭建</h1>
+<ol type="1">
+<li><p>下载git</p>
+<p><code>https://git-scm.com/download/win</code></p></li>
+<li><p>下载python 3.10.6（其他版本的python可能会出现报错）</p>
+<p><code>https://www.python.org/ftp/python/3.10.6/python-3.10.6-amd64.exe</code></p>
+<p>安装时需要勾选Add Python 3.10 to PATH。</p></li>
+<li><p>下载项目</p>
+<p><code>https://github.com/AUTOMATIC1111/stable-diffusion-webui.git</code></p></li>
+<li><p>进入下载的目录</p>
+<p>打开<code>stable-diffusion-webui\webui-user.bat</code>文件。</p>
+<p>配置<code>PYTHON</code>值为python安装目录和<code>VENV_DIR</code>为取一个你想要保存模型的文件夹名称，例如：
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line"> </span><br><span class="line">set PYTHON=C:\Users\10246\AppData\Local\Programs\Python\Python310\python.exe</span><br><span class="line">set GIT=</span><br><span class="line">set VENV_DIR=venv</span><br><span class="line">set COMMANDLINE_ARGS=</span><br><span class="line"> </span><br><span class="line">call webui.bat</span><br></pre></td></tr></table></figure></p></li>
+<li><p>可以使用dev-sidecar来加速。</p>
+<p><code>https://github.com/docmirror/dev-sidecar</code></p></li>
+<li><p>运行<code>python -m pip install --upgrade pip</code>升级pip版本。</p></li>
+<li><p>运行<code>stable-diffusion-webui\webui-user.bat</code>文件。</p></li>
+<li><p>然后根据依赖信息(<code>https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Dependencies</code>)下载<code>sd-v1-4.ckpt</code>文件。</p>
+<p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">magnet:?xt=urn:btih:3a4a612d75ed088ea542acac52f9f45987488d1c&amp;dn=sd-v1-4.ckpt&amp;tr=udp%3a%2f%2ftracker.openbittorrent.com%3a6969%2fannounce&amp;tr=udp%3a%2f%2ftracker.opentrackr.org%3a1337</span><br></pre></td></tr></table></figure></p></li>
+<li><p>将该文件放入<code>stable-diffusion-webui\models\Stable-diffusion</code>目录下，并重命名为<code>model.ckpt</code>。</p></li>
+<li><p>如果出现<code>No module 'xformers'</code>。或者显存不够<code>CUDA out of memory</code>，修改<code>stable-diffusion-webui\webui-user.bat</code>文件，<code>COMMANDLINE_ARGS</code>后加入<code>--medvram --reinstall-xformers --xformers</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line"> </span><br><span class="line">set PYTHON=C:\Users\10246\AppData\Local\Programs\Python\Python310\python.exe</span><br><span class="line">set GIT=</span><br><span class="line">set VENV_DIR=venv</span><br><span class="line">set COMMANDLINE_ARGS=--medvram --reinstall-xformers --xformers</span><br><span class="line"> </span><br><span class="line">call webui.bat</span><br></pre></td></tr></table></figure></li>
+<li><p>没有报错，出现<code>To create a public link, set share=True in launch().</code>，代表安装成功。</p></li>
+<li><p>在浏览器的地址栏输入<code>http://127.0.0.1:7860</code>，进入ui管理界面。</p></li>
+<li><p>设置中文：</p>
+<ol type="a">
+<li>点击<code>Extensions</code>。</li>
+<li>点击<code>Available</code>。</li>
+<li>将<code>localization</code>的勾去掉。</li>
+<li>往下翻，找到<code>zh_CN Localization</code>，点击<code>Install</code>进行安装。</li>
+<li>安装完，点击<code>Settings</code>，再点击左侧菜单的<code>User interface</code>。</li>
+<li>从右侧内容区域找到<code>Localization</code>，点击右侧的刷新按钮，点击下拉框，选择<code>zh_CN</code>。</li>
+<li>点击顶部的<code>Apply settings</code>，再点击<code>Reload UI</code>,
+就完成中文设置。</li>
+</ol></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2023/01/13/Unity%E7%BC%96%E8%BE%91%E5%99%A8%E8%84%9A%E6%9C%AC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jacky Jiang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | 废狗的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2023/01/13/Unity%E7%BC%96%E8%BE%91%E5%99%A8%E8%84%9A%E6%9C%AC/" class="post-title-link" itemprop="url">Unity编辑器脚本</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-13 17:31:31" itemprop="dateCreated datePublished" datetime="2023-01-13T17:31:31+08:00">2023-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">软件开发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="生成窗口">生成窗口</h1>
+<ol type="1">
+<li>在<code>Editor</code>的目录下创建一个C#脚本。写入如下的代码：
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">FloorManagerWindow</span> : <span class="title">EditorWindow</span></span><br><span class="line">{</span><br><span class="line">       [<span class="meta">MenuItem(<span class="string">"数据管理/地板"</span>)</span>]</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ShowWindow</span>()</span></span><br><span class="line">	{</span><br><span class="line">		<span class="keyword">var</span> window = EditorWindow.GetWindow(<span class="keyword">typeof</span>(FloorManagerWindow), <span class="literal">false</span>, <span class="string">"地板数据编辑器"</span>);</span><br><span class="line">		window.minSize = <span class="keyword">new</span> Vector2(<span class="number">1100</span>, <span class="number">600</span>);</span><br><span class="line">		window.Show();</span><br><span class="line">	}</span><br><span class="line">   }</span><br></pre></td></tr></table></figure></li>
+<li>创建一个编辑器窗口，需要该脚本继承<code>UnityEditor.EditorWindows</code>类。</li>
+<li>需要编写一个任意方法名的静态方法，如：<code>public static void ShowWindow() { }</code>。并给该方法增加一个<code>[MenuItem]</code>特性，如：<code>[MenuItem("数据管理/地板")]</code>，该特性中的参数代表Unity编辑器的菜单的路径。该特性可以按照传入的参数在Unity编辑器上创建对应的菜单。并在该菜单项的点击事件触发时调用被特性标记的方法。</li>
+<li>调用<code>EditorWindow.GetWindow(typeof(FloorManagerWindow))</code>方法会根据类型创建一个窗口。</li>
+<li><code>Show()</code>方法会显示窗口。PS：<code>EditorWindow.GetWindow()</code>方法本身就会去调用<code>Show()</code>方法，猜想可能是为了在<code>EditorWindow.GetWindow()</code>之后修改了某些值，因此需要再手动调用<code>Show()</code>方法，以更新修改的值。</li>
+</ol>
+<h1 id="scriptobject">ScriptObject</h1>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1202,350 +1556,6 @@ Flow</li>
 <h2 id="扩展">扩展</h2>
 <p>如不满足现有的需求可以灵活扩展成TBD++ Flow</p>
 <img src="/2022/05/08/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-TBD%E6%A8%A1%E5%BC%8F/TBD_2.jpg" class="" title="TBD++ Flow">
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2022/05/08/C-%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E4%B8%8E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E7%9A%84%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Jacky Jiang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="废狗的博客">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 废狗的博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/05/08/C-%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E4%B8%8E%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E7%9A%84%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">C#成员变量与局部变量的问题</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-05-08 10:19:45" itemprop="dateCreated datePublished" datetime="2022-05-08T10:19:45+08:00">2022-05-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">软件开发</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>今天遇到个之前觉得很常见的代码写法, 在成员方法中直接调用成员变量,
-<code>代码A</code> 如下: <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">{</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> Random Random { <span class="keyword">get</span>; <span class="keyword">set</span>; }</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestRandom</span>()</span></span><br><span class="line">	{</span><br><span class="line">		<span class="keyword">this</span>.Random = <span class="keyword">new</span> Random();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">this</span>.Random == <span class="literal">null</span>)</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">var</span> num = <span class="keyword">this</span>.Random.Next();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">var</span> num1 = <span class="keyword">this</span>.Random.Next();</span><br><span class="line">	}</span><br><span class="line">   }</span><br></pre></td></tr></table></figure></p>
-<h2 id="存在的问题">存在的问题</h2>
-<h3 id="问题一-在多线程下可能存在问题">问题一,
-在多线程下可能存在问题</h3>
-<p>在多线程下可能存在执行<code>this.Random == null</code>之后,
-被其他线程将成员变量Random将其改为<code>null</code>,
-这样将会导致空指针</p>
-<p>因此使用局部变量接收成员变量的引用, <code>代码B</code> 如下:</p>
-<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">{</span><br><span class="line">	<span class="keyword">public</span> Random Random { <span class="keyword">get</span>; <span class="keyword">set</span>; }</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestRandom</span>()</span></span><br><span class="line">	{</span><br><span class="line">		<span class="keyword">this</span>.Random = <span class="keyword">new</span> Random();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">var</span> random = <span class="keyword">this</span>.Random;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(random == <span class="literal">null</span>)</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">var</span> num = random.Next();</span><br><span class="line"></span><br><span class="line">           <span class="keyword">var</span> num1 = random.Next();</span><br><span class="line">	}</span><br><span class="line">   }</span><br></pre></td></tr></table></figure>
-<h3 id="问题二-性能上访问成员变量不如访问局部变量快">问题二,
-性能上访问成员变量不如访问局部变量快</h3>
-<p>直接调用成员属性生成的汇编</p>
-<p><code>var num = this.Random.Next();</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">00007FF7E7A85D6D  mov         rcx,qword ptr [rbp+80h]  </span><br><span class="line">00007FF7E7A85D74  call        方法存根对象: TestVariable.Test.get_Random() (07FF7E7A859B0h)  </span><br><span class="line">00007FF7E7A85D79  mov         qword ptr [rbp+38h],rax  </span><br><span class="line">00007FF7E7A85D7D  mov         rcx,qword ptr [rbp+38h]  </span><br><span class="line">00007FF7E7A85D81  mov         rax,qword ptr [rbp+38h]  </span><br><span class="line">00007FF7E7A85D85  mov         rax,qword ptr [rax]  </span><br><span class="line">00007FF7E7A85D88  mov         rax,qword ptr [rax+40h]  </span><br><span class="line">00007FF7E7A85D8C  call        qword ptr [rax+28h]  </span><br><span class="line">00007FF7E7A85D8F  mov         dword ptr [rbp+34h],eax  </span><br><span class="line">00007FF7E7A85D92  mov         ecx,dword ptr [rbp+34h]  </span><br><span class="line">00007FF7E7A85D95  mov         dword ptr [rbp+5Ch],ecx  </span><br></pre></td></tr></table></figure>
-<p>调用局部变量生成的汇编</p>
-<p><code>var num = random.Next();</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">00007FF7E7A88D27  mov         rcx,qword ptr [rbp+48h]  </span><br><span class="line">00007FF7E7A88D2B  mov         rax,qword ptr [rbp+48h]  </span><br><span class="line">00007FF7E7A88D2F  mov         rax,qword ptr [rax]  </span><br><span class="line">00007FF7E7A88D32  mov         rax,qword ptr [rax+40h]  </span><br><span class="line">00007FF7E7A88D36  call        qword ptr [rax+28h]  </span><br><span class="line">00007FF7E7A88D39  mov         dword ptr [rbp+24h],eax  </span><br><span class="line">00007FF7E7A88D3C  mov         ecx,dword ptr [rbp+24h]  </span><br><span class="line">00007FF7E7A88D3F  mov         dword ptr [rbp+44h],ecx  </span><br></pre></td></tr></table></figure>
-<p>直接调用成员属性每次都需要去找到对应的成员的地址再调用,
-而局部变量则不需要</p>
-<h2 id="结论">结论</h2>
-<p>如果在一个方法内需要多次调用一个成员变量/成员属性/静态成员变量,
-建议使用一个局部变量存储引用, 通过局部变量去调用。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Jacky Jiang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="废狗的博客">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 废狗的博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">Git版本分支管理-开发模式介绍</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-05-07 15:51:07" itemprop="dateCreated datePublished" datetime="2022-05-07T15:51:07+08:00">2022-05-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">软件开发</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="git开发模式分类">Git开发模式分类</h1>
-<p>开发模式从本质上可以分为两类: <strong>特性分支开发模式(Feature Branch
-Development)</strong>和<strong>主干开发模式(Trunk Based
-Development)</strong>.</p>
-<h2 id="特性分支开发模式">特性分支开发模式</h2>
-<h3 id="介绍">介绍</h3>
-<p>特性分支开发模式是指为一个或多个特定的需求 / 缺陷 /
-任务创建代码分支（branch），在其上完成相应的开发（一般经过增量测试）后，把它合并（merge）到主干
-/ 集成分支的开发模式。</p>
-<p>通常这种分支生命期会持续一段时间，从几天到几周不等，极少数情况甚至以月算。</p>
-<p>以Git-Flow为例: <img src="/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/FBD_1.png" class="" title="Git-Flow"></p>
-<h3 id="优点">优点</h3>
-<p>特性开发周期宽松：因为生命期可以较长，较大的需求特性可以在宽松的时间内完成再合入主干；</p>
-<p>分支测试的时间宽松：因为生命期可以较长，可以有较多时间对分支进行测试，甚至手工测试；</p>
-<h3 id="缺点">缺点</h3>
-<p>分支管理复杂：原因在于大量采用代码分支，且来源分支和合入目标分支各异，操作复杂
-—— 以上图为例，可以从 master（Tag 1.0.0） 拉出 hotfix 1.0.2
-分支，然后合入到 develop 分支，开发阶段结束后合入到 release
-branches，发布后合入 master，非常复杂，很容易出错；</p>
-<p>合并冲突多、解决难：分支生命期越长，意味着与主干的代码差异越大，冲突概率越高，冲突的解决难度越大（甚至成为不可能）；</p>
-<p>迭代速度慢：特性分支生命期长（数天至数周）意味着特性上线速度慢，相应的迭代速度也慢；</p>
-<p>需要较多测试环境：每个特性分支都需要分配至少 1
-个测试环境，且长期占用（有状态）；</p>
-<h3 id="适用环境">适用环境</h3>
-<p>对版本迭代速度要求不高</p>
-<p>测试自动化程度低，或说主要靠人工测试的</p>
-<h3 id="常用模式">常用模式</h3>
-<p><strong>Git-Flow</strong>, <strong>Github-Flow</strong>,
-<strong>Gitlab-Flow</strong></p>
-<h2 id="主干开发模式">主干开发模式</h2>
-<h3 id="介绍-1">介绍</h3>
-<p>主干开发，是指开发人员直接向主干（习惯上主干分支通常为：trunk 或
-master）提交 / 推送代码。通常，开发团队的成员 1 天至少 1
-次地将代码提交到主干分支。在到达发布条件时，从主干拉出发布分支（通常为
-release），用于发布。若发现缺陷，直接在主干上修复，并根据需要 cherry
-pick 到对应版本的发布分支。</p>
-<p>以TBD Flow为例: <img src="/2022/05/07/Git%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%BB%8B%E7%BB%8D/TBD_0.png" class="" title="TBD Flow"></p>
-<h3 id="优点-1">优点</h3>
-<p>分支模型简单高效，开发人员易于掌握不容易出现错误操作</p>
-<p>避免了分支合并、冲突解决的困扰</p>
-<p>随时拥有可发布的版本</p>
-<p>有利于持续集成和持续交付</p>
-<h3 id="缺点-1">缺点</h3>
-<p>基础架构要求高：合入到主干的代码若质量不过关将直接阻塞整个团队的开发工作，因此需要高效的持续集成平台进行把关；</p>
-<p>自动化测试要求高：需有完备单元测试代码，确保在代码合入主干前能在获得快速和可靠的质量反馈；</p>
-<p>最好有代码评审：若代码质量要求高，需要配套代码评审（CR）机制，在代码提交到主干时，触发
-CR，通过 Peer Review 后才能正式合入；</p>
-<p>最好有特性开关：主干开发频发合入主干的情况下，特性拆分得很小，可能是半成品特性，需要配套特性开关（Feature
-Toggle），只有当特性整体开发完才通过灰度发布等手段逐步打开；</p>
-<h3 id="适用环境-1">适用环境</h3>
-<p>对迭代速度要求高，希望需求快速交付上线</p>
-<p>基础架构强，持续集成工具高效；</p>
-<p>团队成员习惯
-TDD（测试驱动开发），代码自动化测试覆盖率高（至少增量代码的自动化测试覆盖率高）；</p>
-<h3 id="常用模式-1">常用模式</h3>
-<p><strong>TBD Flow</strong>, <strong>TBD++ Flow</strong></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://freegostudio.github.io/2022/04/24/%E5%85%B3%E4%BA%8Ejs%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5%E4%B8%8E%E4%B8%89%E5%85%83%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E5%9D%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Jacky Jiang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="废狗的博客">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | 废狗的博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/04/24/%E5%85%B3%E4%BA%8Ejs%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8B%BC%E6%8E%A5%E4%B8%8E%E4%B8%89%E5%85%83%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E5%9D%91/" class="post-title-link" itemprop="url">关于js字符串拼接与三元表达式的坑</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-04-24 01:37:16" itemprop="dateCreated datePublished" datetime="2022-04-24T01:37:16+08:00">2022-04-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-20 11:21:24" itemprop="dateModified" datetime="2025-08-20T11:21:24+08:00">2025-08-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">软件开发</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>在学react的代码的入门例子的时候遇到了以下代码 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');</span><br></pre></td></tr></table></figure></p>
-<p>当时想当然的认为并不需要括号,如以下代码</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const status = 'Next player: ' + this.state.xIsNext ? 'X' : 'O';</span><br></pre></td></tr></table></figure>
-<p>但显示结果会为<code>X</code></p>
-<p>但是该代码实际上在类型严格的语言如C#会报错,
-因为代码在没有加括号会从左到右来执行,
-这样会将<code>'Next player: ' + this.state.xIsNext</code>先计算,
-因此得到一个string类型, 但强类型语言的string没法转换成bool类型,
-因此会编译不通过.</p>
-<p>但是js是个弱类型的语言, 因此string类型也能进行true和false判断,
-string不为null则为true, 反之为false,
-因此<code>'Next player: ' + this.state.xIsNext</code>先计算,
-进行真假判断, 得到结果为true, 所以界面会显示<code>X</code></p>
 
       
     </div>
